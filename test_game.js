@@ -413,6 +413,22 @@ const tests = {
       'Run card snippet must include formatted game title, hero, time, and seed'
     );
     console.log('PASS: share_run_card_clipboard');
+  },
+
+  hero_select_and_liberator_sprites_fixed() {
+    assert(
+      code.includes("['liberator','liberator'") && code.includes('liberator:HUES.teal'),
+      'Liberator hero must have procedural sprite registered in HR and HUES'
+    );
+    assert(
+      code.includes('if(!sp||!sp.m)return;'),
+      'drawSpr must safely guard against null/undefined sprite inputs'
+    );
+    assert(
+      code.includes("return proc||Sprites.proc.getBySubject('paladin')||Sprites.proc.list[0]"),
+      'heroSprite must safely fall back if exact sprite not found'
+    );
+    console.log('PASS: hero_select_and_liberator_sprites_fixed');
   }
 };
 
