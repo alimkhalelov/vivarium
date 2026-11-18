@@ -1636,7 +1636,7 @@ G.cfg={hero:'knight',mode:'adv',ng:0,seed:randWord()};G.menuTime=0;
 /* ---------------- scenes ---------------- */
 function menuBg(){G.cam.x=G.t*.45;G.cam.y=190*T-40;CURVE_ON=true;WRAPON=true;CURW=PW;const sv=G.time;G.time=(G.t*.12)%600;drawSkyBg(G.cam.x,G.cam.y,'over');G.time=sv;warpDraw(SBc,.5);warpDraw(CBc,.8);
  L.fillStyle='#0a1210';for(let x=0;x<LW;x++){const nx=(x-LW/2)/(LW/2),off=Math.round(LH*.14*S.curve*nx*nx),y=LH-34+off+Math.sin((x+G.t*.45)*.03)*5+Math.sin((x+G.t*.45)*.011)*8;L.fillRect(x,y,1,LH)}L.drawImage(LIMB,0,0);L.drawImage(VIGN,0,0)}
-function title(c){const k=E.outBack(clamp(G.sceneT/40,0,1));tx(c,'CYLINDER ZERO',LW/2,40-(1-k)*60,'#ffd040',6,true,'c');tx(c,'Break the Eternal Cycle',LW/2,86,'#60e0ff',1,true,'c');if(META.trueEnding)tx(c,'[ ⬡ TRUE LIBERATOR ⬡ ]',LW/2,22,'#00ffcc',1,true,'c')}
+function title(c){const k=E.outBack(clamp(G.sceneT/40,0,1));tx(c,'VIVARIUM',LW/2,40-(1-k)*60,'#ffd040',6,true,'c');tx(c,'THE REINCARNATION PROTOCOL',LW/2,86,'#60e0ff',1,true,'c');if(META.trueEnding)tx(c,'[ ⬡ TRUE LIBERATOR ⬡ ]',LW/2,22,'#00ffcc',1,true,'c')}
 function goScene(s){G.scene=s;G.sceneT=0;UI.sel=0}
 function sceneMenu(c){menuBg();title(c);
  const isFs=!!(document.fullscreenElement||document.webkitFullscreenElement);
@@ -1780,7 +1780,7 @@ function sceneMerchant(c){c.fillStyle='rgba(6,4,14,.75)';c.fillRect(0,0,LW,LH);U
 function shareRunCard(isWin){
  try{
   const m=Math.floor(G.time/60),s=Math.floor(G.time%60),tStr=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
-  const txt='CYLINDER ZERO - RUN SUMMARY\n'
+  const txt='VIVARIUM - RUN SUMMARY\n'
    +(isWin?'🏆 RESULT: VICTORY':'💀 RESULT: DEFEATED')+'\n'
    +'Hero: '+(pl&&pl.hero?pl.hero.name:'Knight')+' (Lv '+((pl&&pl.lv)||1)+')\n'
    +'Time: '+tStr+' | Days: '+(Math.floor(G.time/600)+1)+'\n'

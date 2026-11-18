@@ -1,4 +1,4 @@
-# CYLINDER ZERO
+# VIVARIUM — The Reincarnation Protocol
 
 An original single-file 2D action roguelike rendered on HTML5 Canvas.
 
