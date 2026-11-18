@@ -239,9 +239,15 @@ const tests = {
       'In-game HUD must not show fullscreen/fit buttons during gameplay'
     );
     assert(
-      code.includes("tx(c,'LV '+p.lv,16,26,'#ffd040',1,true,'c')") &&
-      code.includes("tx(c,'ARM '+p.st.armor,32,26,'#a0b0d0',1,true)"),
-      'LV and ARM must have separated coordinates without text collision'
+      code.includes("tx(c,'LV '+p.lv,7,26,'#ffd040',1,true)") &&
+      code.includes("tx(c,'ARM '+Math.round(p.st.armor),52,26,'#a0b0d0',1,true)") &&
+      code.includes("tx(c,'KILLS '+RS.kills,7,35,'#c8c8d8',1,true)") &&
+      code.includes("tx(c,gTxt,78,35,'#ffd040',1,true)"),
+      'HUD labels (LV, ARM, KILLS, GOLD) must have distinct non-colliding coordinates and rounded armor'
+    );
+    assert(
+      !code.includes("tx(c,'LV '+p.lv,16,26,'#ffd040',1,true,'c')"),
+      'LV label must not be center-aligned at 16, which spills outside the panel border'
     );
     assert(
       !code.includes("DEBUG: F5 NEXT OBJECTIVE"),
@@ -429,6 +435,56 @@ const tests = {
       'heroSprite must safely fall back if exact sprite not found'
     );
     console.log('PASS: hero_select_and_liberator_sprites_fixed');
+  },
+
+  onboarding_floating_prompts() {
+    assert(
+      code.includes('const Onboard={') &&
+      code.includes("id:'move'") &&
+      code.includes("id:'jump'") &&
+      code.includes("id:'djump'") &&
+      code.includes("id:'dash'") &&
+      code.includes("id:'skill'"),
+      'Onboard system must be defined with move, jump, djump, dash, and skill steps'
+    );
+    assert(
+      code.includes('Onboard.update()') && code.includes('Onboard.draw(c)'),
+      'Onboard system must be updated and drawn during gameplay'
+    );
+    assert(
+      code.includes('p.air>=1&&p.jumping') && code.includes('p.dashT>0'),
+      'Onboard steps must require real player action verification (air jump, dash)'
+    );
+    console.log('PASS: onboarding_floating_prompts');
+  },
+
+  quest_arrow_early_proximity_glide() {
+    assert(
+      code.includes('const earlyStage=Quest.i<=1;') &&
+      code.includes('G.stageArrowT=(G.stageArrowT||0)+1;'),
+      'drawArrow must track early stage (first 2 stages) and stage arrow time'
+    );
+    assert(
+      code.includes('G.stageArrowT<650') && code.includes('ax=lerp(nearX,edgeX,ease);'),
+      'Quest arrow must orbit near player and glide smoothly to screen edge on early stages'
+    );
+    assert(
+      code.includes('G.stageArrowT=0;') && code.includes('keyGot(){'),
+      'Stage arrow timer must reset on new game and quest stage advance'
+    );
+    console.log('PASS: quest_arrow_early_proximity_glide');
+  },
+
+  favicon_pixel_art_present() {
+    assert(
+      html.includes('<link rel="icon" type="image/svg+xml"'),
+      'index.html must include an SVG favicon'
+    );
+    assert(
+      html.includes("viewBox='0 0 16 16'") && html.includes('crispEdges'),
+      'Favicon SVG must be pixel art with crisp edges'
+    );
+    console.log('PASS: favicon_pixel_art_present');
   }
 };
 
