@@ -546,6 +546,30 @@ const tests = {
       'Stage 2 debrief must display weapon damage breakdown with visual proportion bars'
     );
     console.log('PASS: victory_screen_progressive_disclosure_and_clean_layout');
+  },
+
+  hell_shaft_skip_objective_and_no_teleport_loop() {
+    assert(
+      code.includes("G.collapseTimer1") && code.includes("G.collapseTimer2"),
+      'Collapse timers must be tracked on G to allow safe cancellation during skip and teleport'
+    );
+    assert(
+      code.includes("CW.name==='hell'") && code.includes("transition(()=>this.enterShaft())"),
+      'Hell collapse timer must strictly verify CW.name === hell before executing transition'
+    );
+    assert(
+      code.includes("case 3:pl.hasBoots=true;recalc();G.f.hellBossDead=true;G.f.boots=true;Quest.enterShaft();break;"),
+      'dbgSkip case 3 must immediately grant boots and transition to Shaft without 4.2s delay'
+    );
+    assert(
+      code.includes("case 4:pl.hasBoots=true;recalc();G.f.escaped=true;G.lava=null;Quest.i=5;enterOverworld"),
+      'dbgSkip case 4 must reliably exit Shaft to Overworld volcano without deadlock'
+    );
+    assert(
+      code.includes("G.exiting=false") && code.includes("G.fading=false"),
+      'Shaft exit and enterShaft must reset transition and exiting flags to prevent deadlock'
+    );
+    console.log('PASS: hell_shaft_skip_objective_and_no_teleport_loop');
   }
 };
 
