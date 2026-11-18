@@ -1479,7 +1479,7 @@ function startRun(o){G.scene='loading';G.loadMsg='GENERATING PLANET...';setTimeo
   if(!L_){banner('A NEW DAWN','#ffd070','Explore - the first day is calm');G.tutI=0}else{banner('GAME LOADED','#ffd070');G.tutI=9}
   const hs=lsGet('ps_set',null);saveGame()}catch(e){console.error(e);toast('Generation error: '+e.message);G.scene='menu'}},40)}
 function goDead(){if(G.scene==='dead')return;const sc=Math.floor(RS.gold*.5+RS.kills*.15+Quest.i*60+RS.bosses*100);META.gold+=sc;META.runs++;if(G.seed&&G.seed.startsWith('daily-')){const td=new Date().toISOString().slice(0,10);if(META.lastDaily!==td){const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);META.streak=(META.lastDaily===yest)?(META.streak||0)+1:1;META.lastDaily=td}}META.history.unshift({hero:pl.hero.name,lv:pl.lv,kills:RS.kills,t:Math.floor(G.time),q:Quest.i,win:false,g:sc,d:new Date().toLocaleDateString()});META.history.length=Math.min(10,META.history.length);saveMeta();G.runGold=sc;G.scene='dead';G.deadT=0;checkAch();if(G.mode==='rogue'){try{localStorage.removeItem('ps_save')}catch(e){}}}
-function goVictory(isTrue){const sc=Math.floor(RS.gold*.5+RS.kills*.2+(isTrue?3500:1500));META.gold+=sc;META.runs++;META.wins++;if(isTrue)META.trueWins=(META.trueWins||0)+1;META.ng=Math.max(META.ng,G.ng+1);if(G.seed&&G.seed.startsWith('daily-')){const td=new Date().toISOString().slice(0,10);if(META.lastDaily!==td){const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);META.streak=(META.lastDaily===yest)?(META.streak||0)+1:1;META.lastDaily=td}}const loreIdx=isTrue?3:2;unlockLore(loreIdx);META.history.unshift({hero:pl.hero.name,lv:pl.lv,kills:RS.kills,t:Math.floor(G.time),q:isTrue?11:9,win:true,isTrue:!!isTrue,g:sc,d:new Date().toLocaleDateString()});META.history.length=Math.min(10,META.history.length);metaHeroXP(isTrue?1200:500);checkAch();saveMeta();G.runGold=sc;G.isTrueWin=!!isTrue;G.loreIndex=loreIdx;G.typewriterChars=0;G.scene='victory';G.vT=0;Music.key='';try{localStorage.removeItem('ps_save')}catch(e){}}
+function goVictory(isTrue){const sc=Math.floor(RS.gold*.5+RS.kills*.2+(isTrue?3500:1500));META.gold+=sc;META.runs++;META.wins++;if(isTrue)META.trueWins=(META.trueWins||0)+1;META.ng=Math.max(META.ng,G.ng+1);if(G.seed&&G.seed.startsWith('daily-')){const td=new Date().toISOString().slice(0,10);if(META.lastDaily!==td){const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);META.streak=(META.lastDaily===yest)?(META.streak||0)+1:1;META.lastDaily=td}}const loreIdx=isTrue?3:2;unlockLore(loreIdx);META.history.unshift({hero:pl.hero.name,lv:pl.lv,kills:RS.kills,t:Math.floor(G.time),q:isTrue?11:9,win:true,isTrue:!!isTrue,g:sc,d:new Date().toLocaleDateString()});META.history.length=Math.min(10,META.history.length);metaHeroXP(isTrue?1200:500);checkAch();saveMeta();G.runGold=sc;G.isTrueWin=!!isTrue;G.loreIndex=loreIdx;G.typewriterChars=0;G.scene='victory';G.vT=0;G.vStep=0;G.vCreditsT=0;Music.key='';try{localStorage.removeItem('ps_save')}catch(e){}}
 function respawn(){pl.dead=false;pl.hp=pl.maxHp;pl.gold=Math.floor(pl.gold*.8);pl.iT=180;pl.revived=false;G.slow=1;G.scene='play';const cp=G.checkpoint||{zone:'over',x:OWD.I.spawn.x,y:OWD.I.spawn.y};EN.length=0;EP.length=0;G.boss=null;
  if(cp.zone==='over'||CW.name==='over'&&cp.zone==='over'){enterOverworld(cp.x,cp.y)}else if(cp.zone==='dng'){Quest.enterDungeon()}else if(cp.zone==='hell'){Quest.enterHell()}else if(cp.zone==='shaft'){Quest.enterShaft()}else enterOverworld(OWD.I.spawn.x,OWD.I.spawn.y);banner('YOU RETURN','#ffd070','-20% gold')}
 /* ============================ PLAYER / PICKUP / PROJECTILE DRAW ============================ */
@@ -1756,7 +1756,7 @@ function sceneMeta(c){menuBg();c.fillStyle='rgba(8,6,16,.85)';c.fillRect(0,0,LW,
      UI.panel(c,8,y,LW-16,42,unl?'#081214':'#140a10',unl?'#00e0b0':'#4a2030');
      if(unl){
       tx(c,'['+(i+1)+'] '+log.title+' - '+log.sub,14,y+4,'#40ffb0',1,true);
-      wrapText(c,log.text,14,y+16,LW-28,'#d8ffe8',false);
+      wrapText(c,log.text,14,y+16,LW-28,'#d8ffe8','l',false);
      }else{
       tx(c,'['+(i+1)+'] [ENCRYPTED TRANSMISSION // DATA CORRUPTED]',14,y+8,'#ff6060',1,true);
       tx(c,'Decrypt by conquering bosses and assembling the 3 Core Fragments.',14,y+22,'#8a5060',1,false);
@@ -1809,7 +1809,7 @@ function drawCardIcon(c,cd,x,y,col){
   c.restore();
 }
 
-function wrapText(c,s,x,y,w,col,bold){const words=String(s).toUpperCase().split(' '),maxc=Math.floor(w/6);let line='',yy=y;for(const wd_ of words){if((line+' '+wd_).trim().length>maxc){tx(c,line,x,yy,col,1,true,'c');yy+=10;line=wd_}else line=(line+' '+wd_).trim()}if(line)tx(c,line,x,yy,col,1,true,'c')}
+function wrapText(c,s,x,y,w,col='#fff',align='c',bold=true){if(typeof align==='boolean'){bold=align;align='c'}const al=(align==='l'||align==='r')?align:'c',words=String(s).toUpperCase().split(' '),maxc=Math.floor(w/6);let line='',yy=y;for(const wd_ of words){if((line+' '+wd_).trim().length>maxc){tx(c,line,x,yy,col,1,bold!==false,al);yy+=10;line=wd_}else line=(line+' '+wd_).trim()}if(line)tx(c,line,x,yy,col,1,bold!==false,al)}
 function openLevelUp(){pl.hp=pl.maxHp;G.cards=makeCards(3);G.scene='levelup';G.lvT=0;G.banishMode=false;UI.sel=0}
 function sceneReveal(c){c.fillStyle='rgba(6,4,14,.8)';c.fillRect(0,0,LW,LH);const R_=G.reveal;R_.t++;tx(c,R_.items[0].gear?'TREASURE!':'CHEST OPENED',LW/2,30,'#ffd040',3,true,'c');const n=R_.items.length,w=130,x0=(LW-(n*w+(n-1)*8))/2,names=['Plate','Ring','Blade','Orb','Heart','Star','Crown','Amulet','Relic','Rune'];
  R_.items.forEach((it,i)=>{const x=x0+i*(w+8),y=80,done=R_.t>50+i*25;UI.panel(c,x,y,w,90,'#1a1430',done?'#ffd040':'#4a3a7a');if(!done){const nm=names[(Math.floor(R_.t/3)+i*3)%names.length];c.save();c.beginPath();c.rect(x+2,y+30,w-4,24);c.clip();tx(c,nm,x+w/2,y+36+((R_.t*7)%10)-5,'#c8c0e8',2,true,'c');c.restore();tx(c,'...',x+w/2,y+72,'#8a88a8',1,true,'c');if(R_.t%4===0)Au.sfx('click',null,1+i*.2)}
@@ -1853,8 +1853,122 @@ function shareRunCard(isWin){
 }
 function sceneDead(c){G.deadT=(G.deadT||0)+1;c.fillStyle='rgba(30,0,6,'+Math.min(.82,G.deadT/40)+')';c.fillRect(0,0,LW,LH);if(G.deadT<15)return;tx(c,'YOU DIED',LW/2,16,'#ff4050',4,true,'c');if(G.nearMiss||(G.boss&&!G.boss.dead)){const nm=G.nearMiss||{name:G.boss.name,pct:Math.max(1,Math.round((G.boss.hp/G.boss.maxhp)*100))};tx(c,'💀 ['+nm.name.toUpperCase()+']: ONLY '+nm.pct+'% HP LEFT! Dash through attacks next time!',LW/2,42,'#ff8040',1,true,'c')}const k=G.killer;UI.panel(c,130,52,220,54);tx(c,'SLAIN BY',LW/2,56,'#a8a0c8',1,true,'c');if(k&&k.sp){drawSpr(c,k.sp,LW/2-40,92,2,{plain:1,hue:k.hue||0,flip:1});tx(c,(k.name||'Unknown').toUpperCase(),LW/2+12,72,'#fff',1,true,'c');tx(c,k.sp.proc?'PROCEDURAL SPRITE':'DATASET SPRITE',LW/2+12,84,'#8a88a8',1,true,'c');if(UI.btn(c,'BAN THIS SPRITE',LW/2-8,94,104,12)){Sprites.ban(k.sp.id);toast('Sprite banned')}}else tx(c,(G.deathMsg||'Defeated').toUpperCase(),LW/2,76,'#fff',2,true,'c');tx(c,'LEVEL '+pl.lv+'   KILLS '+RS.kills+'   GOLD '+RS.gold+'   DAYS '+(Math.floor(G.time/600)+1)+'   BOSSES '+RS.bosses,LW/2,114,'#d8d0f0',1,true,'c');tx(c,'+'+G.runGold+' META GOLD  |  STAGE: '+Quest.title(),LW/2,126,'#ffd040',1,true,'c');if(pl.dmgByWp){const wps=Object.entries(pl.dmgByWp).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);if(wps.length){const tot=wps.reduce((s,[,v])=>s+v,0)||1;const topStr=wps.slice(0,3).map(([k,v])=>{const n=(WINFO[k]?WINFO[k].n.split(' ')[0]:k).toUpperCase();return n+': '+Math.round(v)+' ('+Math.round(v/tot*100)+'%)'}).join('  |  ');tx(c,'DPS: '+topStr,LW/2,139,'#8ad0ff',1,true,'c')}}let y=152;const retryLbl=(G.boss&&!G.boss.dead)?'[ SPACE: REVENGE ]':'[ SPACE: RETRY ]';if(UI.btn(c,retryLbl,150,y,180,15)||pressedU('Space')){startRun({seed:randWord(),mode:G.mode,hero:pl.hero.id,ng:G.ng})}y+=17;if(UI.btn(c,'[ 📋 COPY RUN CARD ]',150,y,180,15)){shareRunCard(false)}y+=17;if(G.mode==='adv'){if(UI.btn(c,'RESPAWN AT CAMPFIRE (-20% GOLD)',150,y,180,15)){respawn()}y+=17}if(UI.btn(c,'MAIN MENU',150,y,180,15)){Music.key='';goScene('menu')}}
 const sceneGameOver=sceneDead;
-const CREDITS=['PLANET SURVIVORS','','A WRAPPED-WORLD AUTO-ATTACK ROGUELIKE','','DESIGN, CODE, PIXEL ART & MUSIC','PROCEDURALLY GENERATED IN ONE FILE','','SPRITES: PROCEDURAL / PIXEL ART ATLAS (CC0)','','THANK YOU FOR PLAYING','','NEW GAME+ UNLOCKED'];
-function sceneVictory(c){G.vT++;Music.set(G.isTrueWin?'core':'victory');c.fillStyle=G.isTrueWin?'#040810':'#08060f';c.fillRect(0,0,LW,LH);for(let i=0;i<3;i++)sp(R0.r(0,LW),0,R0.r(-.3,.3),R0.r(1,2.5),90,2,R0.pick(G.isTrueWin?['#00ffcc','#ff2080','#ffffff']:['#ffd040','#ffe890','#fff']),{});c.fillStyle=G.isTrueWin?'#00ffcc':'#ffe890';for(const p_ of PA){if(p_.y<LH+10)c.fillRect(p_.x,p_.y,2,2)}updParts();if(G.isTrueWin){tx(c,'TRUE LIBERATION',LW/2,10,'#00ffcc',4,true,'c');tx(c,'THE PRIME ARCHITECT DECOMPILED - SIMULATION SHATTERED',LW/2,38,'#ff60a0',1,true,'c')}else{tx(c,'VICTORY!',LW/2,10,'#ffd040',4,true,'c');tx(c,'THE HIGHEST BEING HAS FALLEN',LW/2,38,'#fff',1,true,'c')}tx(c,'LEVEL '+pl.lv+'   KILLS '+RS.kills+'   GOLD '+RS.gold+'   DAYS '+(Math.floor(G.time/600)+1),LW/2,50,'#d8d0f0',1,true,'c');tx(c,'+'+G.runGold+' META GOLD',LW/2,61,'#ffd040',1,true,'c');const activeLog=LORE_LOGS[G.loreIndex!=null?G.loreIndex:(G.isTrueWin?3:2)];if(activeLog){G.typewriterChars=Math.min((G.typewriterChars||0)+1,activeLog.text.length);if(G.vT%3===0&&G.typewriterChars<activeLog.text.length&&Au&&Au.sfx)Au.sfx('shot',null,2.5);UI.panel(c,20,72,LW-40,64,'rgba(4,10,14,.92)',G.isTrueWin?'#00e0b0':'#4a8060');tx(c,'TERMINAL ARCHIVE // '+activeLog.title.toUpperCase(),28,78,'#60ffb0',1,true);const vis=activeLog.text.slice(0,G.typewriterChars);wrapText(c,vis+(G.t%20<10?'█':''),28,90,LW-56,'#d8ffe8',false)}if(pl.dmgByWp){const wps=Object.entries(pl.dmgByWp).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);if(wps.length){const tot=wps.reduce((s,[,v])=>s+v,0)||1;const topStr=wps.slice(0,3).map(([k,v])=>{const n=(WINFO[k]?WINFO[k].n.split(' ')[0]:k).toUpperCase();return n+': '+Math.round(v)+' ('+Math.round(v/tot*100)+'%)'}).join('  |  ');tx(c,'WEAPON DAMAGE: '+topStr,LW/2,144,'#8ad0ff',1,true,'c')}}const m=mastery(pl.hero.id),need=Math.floor(60*Math.pow(m.lv,1.35)),xpPct=clamp(m.xp/need,0,1);tx(c,pl.hero.name.toUpperCase()+' MASTERY LV '+m.lv+(m.lv>=30?' (MAX)':' ('+m.xp+'/'+need+' XP)'),LW/2,160,'#ffd040',1,true,'c');bar(c,LW/2-90,170,180,5,xpPct,'#4ac8ff');c.save();c.beginPath();c.rect(0,182,LW,48);c.clip();CREDITS.forEach((l,i)=>tx(c,l,LW/2,216-G.vT*.4+i*14,i===0?'#ffd040':'#d8d0f0',1,true,'c'));c.restore();if(G.vT%50===0)confetti(R0.r(60,420),0,14,2);if(UI.btn(c,'[ 📋 COPY RUN CARD ]',LW/2-110,214,220,16)){shareRunCard(true)}if(UI.btn(c,'[ SPACE: RETRY ]',LW/2-110,236,105,18)||pressedU('Space')){startRun({seed:randWord(),mode:G.mode,hero:pl.hero.id,ng:META.ng})}if(UI.btn(c,'MAIN MENU',LW/2+5,236,105,18)){Music.key='';goScene('menu')}}
+const CREDITS=[
+ 'VIVARIUM // THE REINCARNATION PROTOCOL',
+ 'A PROCEDURAL RETRO ROGUELIKE',
+ '',
+ 'SYSTEM ARCHITECT & DESIGN',
+ 'ALIMZHAN KHALELOV',
+ '',
+ 'ENGINEERED IN A SINGLE HTML FILE',
+ 'PROCEDURAL PIXEL ART & AUDIO SYNTHESIS',
+ 'DATASET: PIXEL ART ATLAS (CC0)',
+ '',
+ 'SPECIAL THANKS',
+ 'ALL RUNNERS WHO DEFY THE ARCHITECT',
+ '',
+ 'CYCLE UNLOCKED: NEW GAME+'
+];
+function sceneVictory(c){
+ G.vT++;G.vStep=G.vStep||0;Music.set(G.isTrueWin?'core':'victory');
+ c.fillStyle=G.isTrueWin?'#040810':'#08060f';c.fillRect(0,0,LW,LH);
+ for(let i=0;i<3;i++)sp(R0.r(0,LW),0,R0.r(-.3,.3),R0.r(1,2.5),90,2,R0.pick(G.isTrueWin?['#00ffcc','#ff2080','#ffffff']:['#ffd040','#ffe890','#fff']),{});
+ c.fillStyle=G.isTrueWin?'#00ffcc':'#ffe890';for(const p_ of PA){if(p_.y<LH+10)c.fillRect(p_.x,p_.y,2,2)}updParts();
+ if(G.vT%45===0)confetti(R0.r(60,LW-60),0,14,2);
+ const activeLog=LORE_LOGS[G.loreIndex!=null?G.loreIndex:(G.isTrueWin?3:2)];
+ const m_t=Math.floor(G.time/60),s_t=Math.floor(G.time%60),tStr=(m_t<10?'0':'')+m_t+':'+(s_t<10?'0':'')+s_t;
+
+ if(G.vStep===0){
+  if(G.isTrueWin){tx(c,'TRUE LIBERATION',LW/2,12,'#00ffcc',4,true,'c');tx(c,'THE PRIME ARCHITECT DECOMPILED - SIMULATION SHATTERED',LW/2,36,'#ff60a0',1,true,'c')}
+  else{tx(c,'VICTORY!',LW/2,12,'#ffd040',4,true,'c');tx(c,'THE HIGHEST BEING HAS FALLEN',LW/2,36,'#fff',1,true,'c')}
+  UI.panel(c,24,48,LW-48,166,'rgba(6,10,18,.94)',G.isTrueWin?'#00e0b0':'#ffd040');
+  c.save();c.fillStyle=G.isTrueWin?'rgba(0,255,204,0.14)':'rgba(255,208,64,0.14)';c.beginPath();c.arc(76,96,30,0,Math.PI*2);c.fill();c.restore();
+  drawSpr(c,heroSprite(pl.hero),60,110,2.5,{plain:1,hue:HUES[pl.hero.base]||0});
+  tx(c,pl.hero.name.toUpperCase(),76,124,'#ffd040',1,true,'c');tx(c,'CLASS LEVEL '+pl.lv,76,136,'#8ad0ff',1,true,'c');
+  tx(c,'💀 ENEMIES SLAIN:',148,62,'#a8a0c8',1,true,'l');tx(c,''+RS.kills,252,62,'#ffffff',1,true,'l');
+  tx(c,'⏱️ SURVIVED:',304,62,'#a8a0c8',1,true,'l');tx(c,tStr+' (DAY '+(Math.floor(G.time/600)+1)+')',382,62,'#ffffff',1,true,'l');
+  tx(c,'💰 GOLD COLLECTED:',148,78,'#a8a0c8',1,true,'l');tx(c,''+RS.gold,252,78,'#ffd040',1,true,'l');
+  tx(c,'👑 DIFFICULTY:',304,78,'#a8a0c8',1,true,'l');tx(c,(G.ng>0?'TORMENT +'+G.ng:'NORMAL'),382,78,(G.ng>0?'#ff4060':'#60ffb0'),1,true,'l');
+  c.fillStyle='rgba(255,255,255,0.12)';c.fillRect(148,96,LW-192,1);
+  tx(c,'META PROGRESSION REWARDS',148,106,'#ffd040',1,true,'l');
+  tx(c,'+ '+G.runGold+' META GOLD ACQUIRED',148,120,'#60ffb0',1,true,'l');
+  const m=mastery(pl.hero.id),need=Math.floor(60*Math.pow(m.lv,1.35)),xpPct=clamp(m.xp/need,0,1);
+  tx(c,pl.hero.name.toUpperCase()+' MASTERY LV '+m.lv+(m.lv>=30?' (MAX)':' ('+m.xp+'/'+need+' XP)'),148,134,'#8ad0ff',1,true,'l');
+  bar(c,148,147,LW-196,6,xpPct,G.isTrueWin?'#00ffcc':'#4ac8ff');
+  tx(c,'CYCLE COMPLETE: TELEMETRY READY FOR TRANSMISSION',148,162,'#a8a0c8',1,false,'l');
+  const p1=(Math.floor(G.t/20)%2===0);
+  const decBtn=p1?'[ 📜 DECRYPT TERMINAL LOGS ➔ ]':'[ 📜 DECRYPT TERMINAL LOGS > ]';
+  if(UI.btn(c,decBtn,LW/2-120,226,240,22)||pressedU('Space','Enter')){G.vStep=1;G.typewriterChars=0;if(Au&&Au.sfx)Au.sfx('powerup')}
+  if(UI.btn(c,'[ 📊 SKIP TO STATS ]',LW-120,226,100,22)){G.vStep=2;G.vCreditsT=0;if(Au&&Au.sfx)Au.sfx('powerup')}
+ }else if(G.vStep===1){
+  tx(c,'>> CYLINDER ZERO // DECLASSIFIED TERMINAL LOG <<',LW/2,12,'#60ffb0',1,true,'c');
+  tx(c,'OBSERVATION DECK TRANSMISSION - CYCLE '+(G.ng+1),LW/2,23,'#8a88a8',1,true,'c');
+  UI.panel(c,24,34,LW-48,180,'rgba(2,8,12,.96)',G.isTrueWin?'#00e0b0':'#2ecc71');
+  tx(c,'TERMINAL ARCHIVE // '+(activeLog?activeLog.title.toUpperCase():'UNKNOWN LOG'),36,44,'#60ffb0',1,true,'l');
+  tx(c,'SECURITY CLEARANCE: ROOT  |  SUBJECT: '+pl.hero.name.toUpperCase(),36,56,'#388860',1,true,'l');
+  c.fillStyle='rgba(0,255,160,0.25)';c.fillRect(36,68,LW-72,1);
+  if(activeLog){
+   G.typewriterChars=Math.min((G.typewriterChars||0)+1,activeLog.text.length);
+   if(G.vT%3===0&&G.typewriterChars<activeLog.text.length&&Au&&Au.sfx)Au.sfx('shot',null,2.8);
+   const vis=activeLog.text.slice(0,G.typewriterChars);
+   wrapText(c,vis+(G.t%20<10?'█':''),36,78,LW-72,'#d8ffe8','l',false);
+  }
+  if(UI.btn(c,'[ ◀ REWARDS ]',24,226,95,22)){G.vStep=0;if(Au&&Au.sfx)Au.sfx('blip')}
+  const debBtn=(Math.floor(G.t/20)%2===0)?'[ 📊 VIEW PERFORMANCE & CREDITS ➔ ]':'[ 📊 VIEW PERFORMANCE & CREDITS > ]';
+  if(UI.btn(c,debBtn,LW/2-95,226,240,22)||pressedU('Space','Enter')){G.vStep=2;G.vCreditsT=0;if(Au&&Au.sfx)Au.sfx('powerup')}
+ }else{
+  tx(c,'TACTICAL DEBRIEF & CREDITS',LW/2,10,'#ffd040',2,true,'c');
+  let totDmg=0;
+  const wps=Object.entries(pl.dmgByWp||{}).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  if(wps.length)totDmg=wps.reduce((s,[,v])=>s+v,0)||1;
+  UI.panel(c,20,26,216,96,'rgba(8,12,24,.92)','#4a80b0');
+  tx(c,'WEAPON DAMAGE BREAKDOWN',30,34,'#8ad0ff',1,true,'l');
+  if(wps.length){
+   wps.slice(0,3).forEach(([k,v],idx)=>{
+    const n=(WINFO[k]?WINFO[k].n.split(' ')[0]:k).toUpperCase();
+    const pct=Math.round(v/totDmg*100);
+    const valStr=v>=1000?(v/1000).toFixed(1)+'K':Math.round(v);
+    const rowY=48+idx*18;
+    tx(c,(idx+1)+'. '+n,30,rowY,'#ffffff',1,true,'l');
+    tx(c,valStr+' ('+pct+'%)',224,rowY,'#8ad0ff',1,true,'r');
+    bar(c,30,rowY+9,194,3,v/totDmg,idx===0?'#00ffcc':(idx===1?'#4ac8ff':'#a880ff'));
+   });
+   if(wps.length>3){
+    const remTot=wps.slice(3).reduce((s,[,v])=>s+v,0);
+    tx(c,'+ '+(wps.length-3)+' OTHER WEAPONS: '+Math.round(remTot)+' DMG',30,104,'#a8a0c8',1,false,'l');
+   }
+  }else{
+   tx(c,'NO RECORDED DAMAGE',30,56,'#888',1,true,'l');
+  }
+  UI.panel(c,244,26,216,96,'rgba(8,12,24,.92)','#a08040');
+  tx(c,'CYCLE METRICS',254,34,'#ffd040',1,true,'l');
+  tx(c,'HERO: '+pl.hero.name.toUpperCase()+' (LV '+pl.lv+')',254,48,'#ffffff',1,true,'l');
+  tx(c,'THREAT LEVEL: '+G.threat+' | BOSSES: '+RS.bosses,254,62,'#d8d0f0',1,true,'l');
+  tx(c,'TOTAL DAMAGE: '+(totDmg>=1000?(totDmg/1000).toFixed(1)+'K':Math.round(totDmg)),254,76,'#60ffb0',1,true,'l');
+  tx(c,'TIME: '+tStr+' (DAY '+(Math.floor(G.time/600)+1)+')',254,90,'#a8a0c8',1,true,'l');
+  tx(c,'SEED: '+(G.seed||'RANDOM').slice(0,16),254,104,'#8ad0ff',1,true,'l');
+
+  UI.panel(c,20,128,LW-40,70,'rgba(4,6,14,.90)','#3a3852');
+  c.save();c.beginPath();c.rect(22,130,LW-44,66);c.clip();
+  G.vCreditsT=(G.vCreditsT||0)+0.35;
+  const maxCreditsScroll=CREDITS.length*15+90;
+  if(G.vCreditsT>maxCreditsScroll)G.vCreditsT=0;
+  CREDITS.forEach((l,i)=>{
+   const cy=194-G.vCreditsT+i*15;
+   if(cy>=118&&cy<=208){
+    const col=(i<2)?'#ffd040':(l.startsWith('SYSTEM')||l.startsWith('DESIGN')||l.startsWith('SPECIAL')||l.startsWith('PROCEDURAL')||l.startsWith('CYCLE')||l.startsWith('THANK')?'#00ffcc':'#d8d0f0');
+    tx(c,l,LW/2,cy,col,1,true,'c');
+   }
+  });
+  c.restore();
+
+  if(UI.btn(c,'[ 📋 COPY RUN CARD ]',LW/2-100,204,200,18)){shareRunCard(true)}
+  if(UI.btn(c,'[ ◀ LORE ]',20,228,76,22)){G.vStep=1;if(Au&&Au.sfx)Au.sfx('blip')}
+  if(UI.btn(c,'[ SPACE: RETRY ]',104,228,146,22)||pressedU('Space','Enter')){startRun({seed:randWord(),mode:G.mode,hero:pl.hero.id,ng:META.ng})}
+  if(UI.btn(c,'MAIN MENU',258,228,110,22)){Music.key='';goScene('menu')}
+  if(UI.btn(c,'[ ◀ REWARDS ]',376,228,84,22)){G.vStep=0;if(Au&&Au.sfx)Au.sfx('blip')}
+ }
+}
 /* ============================ UPDATE / LOOP ============================ */
 function updCam(){const p=pl,cam=G.cam;let tx_=p.x+p.face*26+p.vx*5,ty=p.y-24;if(G.boss&&!G.boss.dead){const bx=wd(p.x,G.boss.x),by=G.boss.y-p.y;if(Math.abs(bx)<420){tx_+=bx*.3;ty+=by*.25}}
  cam.x+=wd(cam.x,tx_)*(WRAPON?.1:.1);cam.y+=(ty-cam.y)*.09;if(WRAPON){if(cam.x<0)cam.x+=PW;if(cam.x>=PW)cam.x-=PW}else{cam.x=clamp(cam.x,LW/2,CW.w*T-LW/2);cam.y=clamp(cam.y,LH/2,CW.h*T-LH/2)}if(CW.name==='over')cam.y=clamp(cam.y,LH/2-60,WH*T-LH/2)}

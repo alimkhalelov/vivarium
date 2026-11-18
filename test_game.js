@@ -516,6 +516,36 @@ const tests = {
       'Wizard must have ambient arcane magical aura and dramatic Arcane Nova skill effects'
     );
     console.log('PASS: wizard_distinct_mechanics_and_hero_persistence');
+  },
+
+  victory_screen_progressive_disclosure_and_clean_layout() {
+    assert(
+      code.includes("G.vStep===0") && code.includes("G.vStep===1"),
+      'Victory screen must implement multi-stage progressive disclosure (G.vStep)'
+    );
+    assert(
+      code.includes("wrapText(c,s,x,y,w,col='#fff',align='c',bold=true)") ||
+      code.includes("wrapText(c,s,x,y,w,col,align"),
+      'wrapText must accept align parameter defaulting to c with support for left align l'
+    );
+    assert(
+      code.includes("CREDITS.forEach") &&
+      code.includes("c.clip()") &&
+      code.includes("G.vCreditsT"),
+      'Credits marquee must be smoothly animated and clipped in dedicated window without overlapping buttons'
+    );
+    assert(
+      code.includes("DECRYPT TERMINAL LOGS") &&
+      code.includes("VIEW PERFORMANCE & CREDITS") &&
+      code.includes("SPACE: RETRY"),
+      'Progressive disclosure flow must provide clear stage navigation and spacebar flow'
+    );
+    assert(
+      code.includes("wps.slice(0,3).forEach") &&
+      code.includes("WEAPON DAMAGE BREAKDOWN"),
+      'Stage 2 debrief must display weapon damage breakdown with visual proportion bars'
+    );
+    console.log('PASS: victory_screen_progressive_disclosure_and_clean_layout');
   }
 };
 
