@@ -5,7 +5,7 @@ An original single-file 2D action roguelike rendered on HTML5 Canvas.
 ## Play Online
 
 Live demo deployed via GitHub Pages:
-https://alimzhankhalelov.github.io/cylinder-zero/
+https://alimkhalelov.github.io/vivarium/
 
 ## Tech Specs
 
