@@ -485,6 +485,37 @@ const tests = {
       'Favicon SVG must be pixel art with crisp edges'
     );
     console.log('PASS: favicon_pixel_art_present');
+  },
+
+  space_arena_flight_clearance_and_no_blocking_walls() {
+    assert(
+      code.includes("if(CW.name==='over'&&p.y<2*T)p.y=2*T;"),
+      'Space vertical ceiling clamp must be at row 2 to grant 12+ tiles of flight room'
+    );
+    assert(
+      !code.includes("fillR(w,AX+o,10,1,4,TL.METAL)"),
+      'Space arena platform must not contain 4-tile high vertical blocking walls'
+    );
+    console.log('PASS: space_arena_flight_clearance_and_no_blocking_walls');
+  },
+
+  wizard_distinct_mechanics_and_hero_persistence() {
+    assert(
+      code.includes("META.lastHero") &&
+      code.includes("['knight','wizard','rogue'].forEach"),
+      'Wizard must be permanently unlocked and chosen hero persisted in META.lastHero'
+    );
+    assert(
+      code.includes("n=2+(lv>>1)+amt+(evo?3:0);") &&
+      code.includes("w.cd=46*cdm;"),
+      'Wizard starting Arcane Missiles must launch 2+ homing bolts with rapid cooldown'
+    );
+    assert(
+      code.includes("p.hero.id==='wizard'") &&
+      code.includes("ARCANE NOVA!"),
+      'Wizard must have ambient arcane magical aura and dramatic Arcane Nova skill effects'
+    );
+    console.log('PASS: wizard_distinct_mechanics_and_hero_persistence');
   }
 };
 

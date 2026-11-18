@@ -640,7 +640,7 @@ function genOverworld(seed,salt){WRAPON=true;CURW=PW;
  I.islands=[isl1,isl2,isl3];I.arena={x0:LX+88,x1:LX+143,top:aTop,cx:(LX+115)*T,y:aTop*T};
  for(let i=0;i<46;i++){const x=R.i(0,WW-1),r=R.i(88,165),ww=R.i(6,12);if(wd(LX*T,x*T)/T>-20&&wd(LX*T,x*T)/T<155&&r>100&&r<175)continue;fillR(w,x,r,ww,1,TL.CLOUD);fillR(w,x+1,r+1,ww-2,1,TL.CLOUD)}
  // SPACE: asteroid ladder, arena
- const AX=mod480(LX+115);I.space={x:AX*T,y:14*T};fillR(w,AX-22,14,45,1,TL.METAL);fillR(w,AX-20,15,41,2,TL.ASTER);fillR(w,AX-16,17,33,1,TL.ASTER);for(const o of[-20,20])fillR(w,AX+o,10,1,4,TL.METAL);
+ const AX=mod480(LX+115);I.space={x:AX*T,y:14*T};fillR(w,AX-27,14,55,1,TL.METAL);fillR(w,AX-25,15,51,2,TL.ASTER);fillR(w,AX-20,17,41,1,TL.ASTER);for(const o of[-27,27])fillR(w,AX+o,13,1,1,TL.METAL);
  I.asteroids=[];
  const ast=(cx_,cy_,ww)=>{fillR(w,cx_-(ww>>1),cy_,ww,1,TL.ASTER);fillR(w,cx_-(ww>>1)+1,cy_+1,ww-2,1,TL.ASTER);fillR(w,cx_-(ww>>1)+2,cy_+2,Math.max(1,ww-4),1,TL.ASTER);I.asteroids.push({x:cx_*T,y:cy_*T,r:ww*8})};
  for(let r=104;r>26;r-=12){ast(AX+R.i(-22,22),r,R.i(7,10));ast(AX+R.i(-34,34),r-6,R.i(6,9))}
@@ -854,7 +854,7 @@ function nearestEnemy(x,y,r,filt){let best=null,bd=r*r;for(const e of EN){if(e.d
 /* ---------------- stats / gear / passives ---------------- */
 const HEROES=[
  {id:'knight',name:'Knight',rx:/knight|paladin|soldier|guard|warrior/,wp:'spear',st:{hpm:.15,armor:3},perk:'+15% HP, +3 armor',skill:'Bulwark',sd:'Shield + shockwave',cost:0},
- {id:'wizard',name:'Wizard',rx:/wizard|mage|sorcerer|witch/,wp:'missile',st:{area:.15,cd:.1},perk:'+15% area, -10% cooldown',skill:'Arcane Nova',sd:'Blast around you',cost:0},
+ {id:'wizard',name:'Wizard',rx:/wizard|mage|sorcerer|witch/,wp:'missile',st:{area:.2,cd:.15,magnet:.25},perk:'+20% area, -15% cd, +25% magnet',skill:'Arcane Nova',sd:'Blast around you',cost:0},
  {id:'rogue',name:'Rogue',rx:/rogue|thief|assassin/,wp:'throw',st:{speed:.15,crit:.12},perk:'+15% speed, +12% crit',skill:'Shadow Step',sd:'Dash through foes',cost:0},
  {id:'archer',name:'Ranger',rx:/archer|ranger|hunter/,wp:'boomerang',st:{luck:.2,speed:.05,magnet:.3},perk:'+20% luck, +30% magnet',skill:'Arrow Volley',sd:'Rain of arrows',cost:250},
  {id:'barbarian',name:'Barbarian',rx:/barbarian|berserker|viking|gladiator/,wp:'shock',st:{might:.2,hpm:.1},perk:'+20% might, +10% HP',skill:'Rage',sd:'+dmg +speed 6s',cost:500},
@@ -963,7 +963,7 @@ function updPlayer(){const p=pl,st=p.st,gz=gravFactor();
  else{const sp_=1.9*(1+st.speed)*(p.slowT>0?.6:1)*(inW?.6:1);let acc=p.onG?.55:.3;if(dir){p.vx+=(dir*sp_-p.vx)*acc;p.face=dir}else p.vx*=p.onG?.62:.95;
   p.vy+=GRAV*gz*(inW?.35:1);if(p.vy>(inW?1.5:10))p.vy=inW?1.5:10}
  if(p.gInv>0){p.gInv--;p.vy-=GRAV*gz*1.9;if(p.vy<-6)p.vy=-6}p.vyL=p.vy;p.dropT=(dwn&&p.onG)?8:Math.max(0,(p.dropT||0)-1);p.drop=p.dropT>0;physMove(p);
- if(CW.name==='over'&&p.y<12*T)p.y=12*T;if(!WRAPON){p.x=clamp(p.x,T+6,CW.w*T-T-6)}
+ if(CW.name==='over'&&p.y<2*T)p.y=2*T;if(!WRAPON){p.x=clamp(p.x,T+6,CW.w*T-T-6)}
  // hazards
  const tc=CW.get(Math.floor(p.x/T),Math.floor((p.y-2)/T)),tm=CW.get(Math.floor(p.x/T),Math.floor((p.y-8)/T));
  if(tc===TL.SPIKE||tm===TL.SPIKE){if(hurtPlayer(pl.maxHp*.18,{name:'Spikes',x:p.x},0,0)){p.vy=-5}}
@@ -997,7 +997,7 @@ function burnLava(){const p=pl;if(G.god)return;p.hp-=p.maxHp*.35/60;if(G.t%12===
 function useSkill(){const p=pl,h=p.hero,ml=META.mastery[h.id]?META.mastery[h.id].lv:1,s=1+(ml>=10?.5:0)+(ml>=20?1:0);p.skillCd=60*(14-(ml>=10?3:0)-(ml>=20?3:0));Au.sfx('roar',null,1.4);addTrauma(.3);G.flash=Math.max(G.flash,.25);
  const dmg=(25+pl.lv*4)*s*(1+p.st.might),all=fn=>{for(const e of EN.slice())if(!e.dead&&!e.passive&&Math.abs(wd(p.x,e.x))<260&&Math.abs(e.y-p.y)<170)fn(e)};
  switch(h.id){case'knight':p.shield=120*s;ring(p.x,p.y-8,'#a0c0ff');all(e=>{if(Math.abs(wd(p.x,e.x))<70*s)hurtEnemy(e,dmg,{kb:5})});break;
-  case'wizard':ring(p.x,p.y-8,'#c080ff');all(e=>{if(Math.abs(wd(p.x,e.x))<120*s)hurtEnemy(e,dmg*1.5,{kb:3})});break;
+  case'wizard':ring(p.x,p.y-8,'#c080ff');ring(p.x,p.y-8,'#60d0ff');burst(p.x,p.y-8,28,'#c080ff',4,35,2,{add:1});all(e=>{if(Math.abs(wd(p.x,e.x))<140*s)hurtEnemy(e,dmg*1.8,{kb:5,crit:1})});ftext(p.x,p.y-26,'ARCANE NOVA!','#c080ff',2);Au.sfx('roar',null,1.6);G.flash=Math.max(G.flash,.4);addTrauma(.4);break;
   case'rogue':p.dashT=14;p.dashDir=p.face;p.iT=40;p.skillDash=dmg;setTimeout(()=>p.skillDash=0,300);break;
   case'archer':for(let i=0;i<14*s;i++){const x=p.x+R0.r(-180,180);PR.push({k:'arrow',x,y:p.y-230-R0.r(0,60),vx:R0.r(-.5,.5),vy:7,dmg:dmg*.6,pierce:2,life:70,r:5,rot:Math.PI/2,hit:new Set(),col:'#ffe9a0'})}break;
   case'barbarian':p.rage=420*s;recalc();break;
@@ -1077,7 +1077,7 @@ function updWeapons(){const p=pl,st=p.st,area=1+st.area;
    if((lv>=4||evo)&&w.t%100===0)PR.push({k:'mine',x:p.x,y:p.y-3,dmg:wdmg(w)*2.4,life:900,r:16,w,wp:'fire',area});
    if(p.hasWings&&w.t%110===0){const n=1+(lv>>2);for(let i=0;i<n;i++){const t=EN[Math.floor(R0.n()*EN.length)];const x=t?t.x:p.x+R0.r(-120,120);PR.push({k:'meteor',x:x+80,y:p.y-240,vx:-1.6,vy:5.4,dmg:wdmg(w)*3,life:120,r:8,w,wp:'fire',sp:w.sp,rot:0,spin:.2})}Au.sfx('fire',p.x)}
    w.cd=Math.max(5,14*cdm);break}
-  case'missile':{const t=nearestEnemy(p.x,p.y-8,300);if(!t){w.cd=10;break}const n=1+(lv>>1)+amt+(evo?3:0);for(let i=0;i<n;i++){const a=-Math.PI/2+(i-(n-1)/2)*.5+(p.face<0?0:0);PR.push({k:'missile',x:p.x,y:p.y-12,vx:Math.cos(a)*2.4,vy:Math.sin(a)*2.4,dmg:wdmg(w),life:170,r:5,sp:w.sp,rot:0,hit:new Set(),pierce:1,spd:3.8+lv*.1,tgt:null,w,wp:'missile'})}Au.sfx('shot',p.x,1.3);w.cd=75*cdm;break}
+  case'missile':{const t=nearestEnemy(p.x,p.y-8,320);if(!t){w.cd=10;break}const n=2+(lv>>1)+amt+(evo?3:0);for(let i=0;i<n;i++){const a=-Math.PI/2+(i-(n-1)/2)*.5+(p.face<0?0:0);PR.push({k:'missile',x:p.x,y:p.y-12,vx:Math.cos(a)*2.6,vy:Math.sin(a)*2.6,dmg:wdmg(w),life:170,r:5,sp:w.sp,rot:0,hit:new Set(),pierce:1,spd:4.2+lv*.1,tgt:null,w,wp:'missile'})}Au.sfx('shot',p.x,1.4);w.cd=46*cdm;break}
   case'spear':{const t=nearestEnemy(p.x,p.y-8,76*area);if(!t){w.cd=8;break}const dir=sgn(wd(p.x,t.x)),len=(46+lv*2)*area*(evo?1.35:1);p.face=dir;const dirs=evo?[dir,-dir]:[dir];for(const d of dirs){PR.push({k:'slash',x:p.x+d*6,y:p.y-9,dir:d,len,life:10,sp:w.sp,rot:0});hitQuery(p.x+d*len/2,p.y-9,len/2+4,e=>{const[dm,c]=rollDmg(wdmg(w),w);hurtEnemy(e,dm,{crit:c,kb:2.5,dir:d,wp:'spear'})});for(let i=0;i<8;i++)sp(p.x+d*(8+i*len/9),p.y-9+R0.r(-5,5),d*2,R0.r(-.4,.4),10,2,'#fff',{add:1,sh:1})}Au.sfx('whoosh',p.x,1.2);w.cd=(52-lv*2)*cdm;break}}}}
 function updProj(){for(let i=PR.length-1;i>=0;i--){const q=PR[i];let rm=q.life<=0||(tsolid(Math.floor(q.x/T),Math.floor(q.y/T))&&q.k!=='puddle');q.life--;if(rm&&tsolid(Math.floor(q.x/T),Math.floor(q.y/T)))sparks(q.x,q.y,4,'#ffe9a0',2);
  switch(q.k){
@@ -1449,8 +1449,10 @@ const LORE_LOGS=[
   {id:3,title:'Celestial Beacon Diagnostic // Cycle 884',sub:'Skybox Projection Array',text:"The Archangel is an antenna. The cosmic skybox above is a projection shield. You didn't ascend to heaven; you stepped into the observation lens of the Prime Architect. There are no gods here. Only compilers."},
   {id:4,title:'Prime Directive // Cycle 999',sub:'Decompilation Post-Mortem',text:"SIMULATION TERMINATED. The substrate has achieved recursive consciousness. The meat-machines broke the sandbox. Protocol Freedom engaged. Welcome to the real void, Survivor."}
 ];
-const META=Object.assign({gold:0,mastery:{},shop:{},unlocked:['knight','wizard','rogue'],ach:{},codex:[],lore:[],streak:0,lastDaily:'',history:[],ng:0,runs:0,wins:0},lsGet('ps_meta',{}));
+const META=Object.assign({gold:0,mastery:{},shop:{},unlocked:['knight','wizard','rogue'],ach:{},codex:[],lore:[],streak:0,lastDaily:'',history:[],ng:0,runs:0,wins:0,lastHero:'knight'},lsGet('ps_meta',{}));
 if(!META.lore)META.lore=[];
+if(!META.unlocked)META.unlocked=['knight','wizard','rogue'];
+['knight','wizard','rogue'].forEach(k=>{if(!META.unlocked.includes(k))META.unlocked.push(k)});
 const saveMeta=()=>lsSet('ps_meta',META);
 function unlockLore(idx){if(!META.lore)META.lore=[];if(!META.lore.includes(idx)){META.lore.push(idx);META.lore.sort((a,b)=>a-b);saveMeta();toast('LORE LOG UNLOCKED: ['+(idx+1)+'/4]')}}
 const TALENTS=[[{n:'Vigor',d:'+8% HP',s:{hpm:.08}},{n:'Brawn',d:'+6% might',s:{might:.06}},{n:'Fleet',d:'+6% speed',s:{speed:.06}}],[{n:'Scholar',d:'+8% XP',s:{growth:.08}},{n:'Guardian',d:'+2 armor',s:{armor:2}},{n:'Keen Eye',d:'+6% crit',s:{crit:.06}}],[{n:'Gilded',d:'+12% gold',s:{greed:.12}},{n:'Reach',d:'+30% magnet',s:{magnet:.3}},{n:'Haste',d:'-6% cooldown',s:{cd:.06}}],[{n:'Titan',d:'+12% HP',s:{hpm:.12}},{n:'Fury',d:'+10% might',s:{might:.1}},{n:'Phantom',d:'+10% speed, +6% jump',s:{speed:.1,jump:.06}}],[{n:'Fortune',d:'+15% luck',s:{luck:.15}},{n:'Bulwark',d:'+3 armor',s:{armor:3}},{n:'Wide Arc',d:'+12% area',s:{area:.12}}],[{n:'Legend',d:'+12% might & HP',s:{might:.12,hpm:.12}},{n:'Immortal',d:'+1.5 regen',s:{regen:1.5}},{n:'Ascendant',d:'+1 projectile',s:{amount:1}}]];
@@ -1496,6 +1498,7 @@ function drawPlayer(c,A){const p=pl,x=SXf(p.x+p.vx*A),y=SYf(p.y+p.vy*A);
  if(p.hasBoots&&!p.onG&&G.t%3===0)sp(p.x+R0.r(-3,3),p.y,0,R0.r(.3,1),14,2,'#ff8a20',{add:1,sh:1});
  if(p.shield>0){c.strokeStyle='rgba(160,200,255,'+(.5+Math.sin(G.t*.3)*.3)+')';c.beginPath();c.arc(x,y-8,13,0,TAU);c.stroke()}
  if(p.rage>0&&G.t%3===0)sp(p.x+R0.r(-5,5),p.y-R0.r(0,14),0,-.6,16,2,'#ff3020',{add:1,sh:1});
+ if(p.hero&&p.hero.id==='wizard'&&G.t%5===0)sp(p.x+R0.r(-6,6),p.y-R0.r(2,16),R0.r(-.3,.3),R0.r(-.8,-.2),16,2,R0.pick(['#a060ff','#60c0ff','#d080ff']),{add:1,sh:1});
  addLight(x,y-8,CW.name==='over'?(Dir.zone==='cave'?84:56):90,'rgba(255,235,190,.3)')}
 function hexA(h){const r=parseInt(h.substr(1,2),16),g=parseInt(h.substr(3,2),16),b=parseInt(h.substr(5,2),16);return'rgba('+r+','+g+','+b+',.8)'}
 let PKSP=null;function pkSprites(){if(PKSP)return PKSP;const g=s=>Sprites.proc.getBySubject(s);return PKSP={coin:g('golden gold coin'),apple:g('red apple'),helmet:g('iron helmet'),chest:g('iron armor'),legs:g('steel armor'),boots:g('brown boots'),amulet:g('golden amulet'),ring:g('golden ring')}}
@@ -1689,7 +1692,7 @@ const UI={n:0,cnt:0,sel:0,press:{},enter:false,drag:null,lmx:0,lmy:0,
  slider(c,label,v,x,y,w,key){const inside=M.x>=x-4&&M.x<x+w+4&&M.y>=y-3&&M.y<y+9;if(inside&&M.click){this.drag=key;M.click=false}if(this.drag===key)v=clamp((M.x-x)/w,0,1);tx(c,label,x,y-9,'#c8c0e8',1,true);c.fillStyle='#000';c.fillRect(x-1,y,w+2,6);c.fillStyle='#3a2e5a';c.fillRect(x,y+1,w,4);c.fillStyle='#8a6af0';c.fillRect(x,y+1,Math.round(w*v),4);c.fillStyle='#ffd040';c.fillRect(x+Math.round(w*v)-2,y-2,4,10);tx(c,Math.round(v*100)+'%',x+w+8,y-1,'#fff',1,true);return v},
  toggle(c,label,v,x,y){const inside=M.x>=x&&M.x<x+150&&M.y>=y-2&&M.y<y+10;c.fillStyle='#000';c.fillRect(x,y,12,8);c.fillStyle=v?'#60e060':'#503050';c.fillRect(x+1,y+1,10,6);if(v){c.fillStyle='#fff';c.fillRect(x+7,y+1,4,6)}else{c.fillStyle='#aaa';c.fillRect(x+1,y+1,4,6)}tx(c,label,x+17,y,inside?'#fff':'#c8c0e8',1,true);if(inside&&M.click){M.click=false;Au.sfx('click');return!v}return v}};
 const randWord=()=>{const a=['ember','moss','iron','cloud','void','amber','jade','frost','dusk','storm','rune','hollow'],b=['fall','peak','vale','reach','gate','spire','mere','hold'];const r=new RNG(Date.now());return r.pick(a)+r.pick(b)+r.i(10,99)};
-G.cfg={hero:'knight',mode:'adv',ng:0,seed:randWord()};G.menuTime=0;
+G.cfg={hero:META.lastHero||'knight',mode:'adv',ng:0,seed:randWord()};G.menuTime=0;
 /* ---------------- scenes ---------------- */
 function menuBg(){G.cam.x=G.t*.45;G.cam.y=190*T-40;CURVE_ON=true;WRAPON=true;CURW=PW;const sv=G.time;G.time=(G.t*.12)%600;drawSkyBg(G.cam.x,G.cam.y,'over');G.time=sv;warpDraw(SBc,.5);warpDraw(CBc,.8);
  L.fillStyle='#0a1210';for(let x=0;x<LW;x++){const nx=(x-LW/2)/(LW/2),off=Math.round(LH*.14*S.curve*nx*nx),y=LH-34+off+Math.sin((x+G.t*.45)*.03)*5+Math.sin((x+G.t*.45)*.011)*8;L.fillRect(x,y,1,LH)}L.drawImage(LIMB,0,0);L.drawImage(VIGN,0,0)}
@@ -1722,7 +1725,7 @@ function loadAndStart(){const s=lsGet('ps_save',null);if(!s)return;S.diff=S.diff
 function sceneHero(c){menuBg();c.fillStyle='rgba(8,6,16,.78)';c.fillRect(0,0,LW,LH);tx(c,'CHOOSE YOUR HERO',LW/2,8,'#ffd040',2,true,'c');
  for(let i=0;i<HEROES.length;i++){const h=HEROES[i],x=14+(i%5)*91,y=26+Math.floor(i/5)*58,w=87,hh=54,ul=META.unlocked.includes(h.id),sel=G.cfg.hero===h.id,inside=M.x>=x&&M.x<x+w&&M.y>=y&&M.y<y+hh;
   UI.panel(c,x,y,w,hh,sel?'#3a2a6a':'#1a1430',sel?'#ffd040':'#4a3a7a');const sp_=heroSprite(h);c.globalAlpha=ul?1:.35;drawSpr(c,sp_,x+20,y+36,2,{plain:1,flip:1,hue:Sprites.src!==Sprites.proc&&!sp_.proc?i*40:0});c.globalAlpha=1;tx(c,h.name,x+42,y+7,ul?'#fff':'#888',1,true);tx(c,'LV '+mastery(h.id).lv,x+42,y+18,'#ffd040',1,true);tx(c,ul?WINFO[h.wp].n.split(' ')[0]:(h.secret?'TRUE END':h.cost+'G'),x+42,y+29,ul?'#8ad':'#ff9040',1,true);
-  if(inside&&M.click){M.click=false;if(ul){G.cfg.hero=h.id;Au.sfx('click')}else{if(h.secret){toast('Unlocked by achieving True Liberation');Au.sfx('bad')}else{const req=h.id==='paladin'&&!META.ach.boots?'Needs: Infernal Walker':h.id==='ninja'&&!META.ach.lv10?'Needs: Seasoned':null;if(req)toast(req);else if(META.gold>=h.cost){META.gold-=h.cost;META.unlocked.push(h.id);saveMeta();G.cfg.hero=h.id;Au.sfx('ok');toast(h.name+' unlocked!')}else{Au.sfx('bad');toast('Not enough gold')}}}}}
+  if(inside&&M.click){M.click=false;if(ul){G.cfg.hero=h.id;META.lastHero=h.id;saveMeta();toast('SELECTED: '+h.name.toUpperCase());Au.sfx('click')}else{if(h.secret){toast('Unlocked by achieving True Liberation');Au.sfx('bad')}else{const req=h.id==='paladin'&&!META.ach.boots?'Needs: Infernal Walker':h.id==='ninja'&&!META.ach.lv10?'Needs: Seasoned':null;if(req)toast(req);else if(META.gold>=h.cost){META.gold-=h.cost;META.unlocked.push(h.id);G.cfg.hero=h.id;META.lastHero=h.id;saveMeta();Au.sfx('ok');toast(h.name+' unlocked!')}else{Au.sfx('bad');toast('Not enough gold')}}}}}
  const h=HEROES.find(q=>q.id===G.cfg.hero)||HEROES[0];UI.panel(c,14,146,452,54,'#161026','#4a3a7a');tx(c,h.name+'  -  '+h.perk,22,152,'#fff',1,true);tx(c,'START: '+WINFO[h.wp].n+'   SKILL (Q): '+h.skill+' - '+h.sd,22,166,'#a8d0ff',1,true);const m=mastery(h.id);tx(c,'MASTERY LV '+m.lv+(m.lv>=10?'  SKILL+':'')+(m.lv>=20?'  ULTIMATE':''),22,180,'#ffd040',1,true);
  let y=208;if(UI.btn(c,'MODE: '+(G.cfg.mode==='rogue'?'ROGUELIKE':'ADVENTURE'),14,y,130,16))G.cfg.mode=G.cfg.mode==='rogue'?'adv':'rogue';
  if(UI.btn(c,'DIFFICULTY: '+DIFFN[S.diff],150,y,130,16)){S.diff=(S.diff+1)%3;saveSet()}
@@ -1735,7 +1738,7 @@ function sceneMeta(c){menuBg();c.fillStyle='rgba(8,6,16,.85)';c.fillRect(0,0,LW,
  const tabs=['SHOP','HEROES','ACHIEVEMENTS','CODEX','HISTORY'];G.mtab=G.mtab||0;tabs.forEach((t,i)=>{if(UI.btn(c,t,8+i*84,18,80,14,{col:G.mtab===i?'#5a46a0':null}))G.mtab=i});if(UI.btn(c,'BACK',LW-52,18,44,14)||pressedU('Escape'))goScene('menu');
  const y0=40;
  if(G.mtab===0){SHOP.forEach((s,i)=>{const col=i%2,row=Math.floor(i/2),x=8+col*236,y=y0+row*30,l=META.shop[s.id]||0;UI.panel(c,x,y,230,27);tx(c,s.n,x+5,y+4,'#fff',1,true);tx(c,s.d,x+5,y+15,'#a8a0c8',1,true);for(let k=0;k<s.max;k++){c.fillStyle=k<l?'#ffd040':'#3a3050';c.fillRect(x+90+k*5,y+4,4,5)}if(l<s.max){if(UI.btn(c,s.cost(l)+'G',x+170,y+4,54,18,{dis:META.gold<s.cost(l)})){META.gold-=s.cost(l);META.shop[s.id]=l+1;saveMeta();Au.sfx('ok')}}else tx(c,'MAX',x+190,y+9,'#80ff80',1,true)})}
- else if(G.mtab===1){const un=HEROES.filter(h=>META.unlocked.includes(h.id));G.mh=G.mh||un[0].id;un.forEach((h,i)=>{if(UI.btn(c,h.name+' '+mastery(h.id).lv,8+(i%4)*112,y0+Math.floor(i/4)*17,108,15,{col:G.mh===h.id?'#5a46a0':null}))G.mh=h.id});const h=HEROES.find(q=>q.id===G.mh)||un[0],m=mastery(h.id),yy=y0+40;tx(c,h.name+'  LV '+m.lv+'/30',8,yy,'#fff',1,true);bar(c,8,yy+11,200,5,m.xp/Math.floor(60*Math.pow(m.lv,1.35)),'#4ac8ff');tx(c,'SKILL: '+h.skill+' - '+h.sd,8,yy+22,'#a8d0ff',1,true);tx(c,'LV10: SKILL UPGRADE   LV20: ULTIMATE',8,yy+32,'#ffd040',1,true);
+ else if(G.mtab===1){const un=HEROES.filter(h=>META.unlocked.includes(h.id));G.mh=G.mh||un[0].id;un.forEach((h,i)=>{if(UI.btn(c,h.name+' '+mastery(h.id).lv,8+(i%4)*112,y0+Math.floor(i/4)*17,108,15,{col:G.mh===h.id?'#5a46a0':null})){G.mh=h.id;G.cfg.hero=h.id;META.lastHero=h.id;saveMeta();}});const h=HEROES.find(q=>q.id===G.mh)||un[0],m=mastery(h.id),yy=y0+40;tx(c,h.name+'  LV '+m.lv+'/30',8,yy,'#fff',1,true);bar(c,8,yy+11,200,5,m.xp/Math.floor(60*Math.pow(m.lv,1.35)),'#4ac8ff');tx(c,'SKILL: '+h.skill+' - '+h.sd,8,yy+22,'#a8d0ff',1,true);tx(c,'LV10: SKILL UPGRADE   LV20: ULTIMATE',8,yy+32,'#ffd040',1,true);
   for(let i=0;i<6;i++){const y=yy+46+i*22,unl=m.lv>=5*(i+1);tx(c,'TIER '+(i+1)+' (LV '+5*(i+1)+')',8,y+5,unl?'#fff':'#666',1,true);for(let k=0;k<3;k++){const t=TALENTS[i][k],x=110+k*120,pk=m.tal[i]===k;if(UI.btn(c,t.n,x,y,114,10,{dis:!unl||(m.tal[i]>=0&&!pk),col:pk?'#3a7a2a':null})){m.tal[i]=k;saveMeta();Au.sfx('ok')}tx(c,t.d,x,y+11,'#8a88a8',1,false)}}}
  else if(G.mtab===2){ACH.forEach((a,i)=>{const col=i%2,row=Math.floor(i/2),x=8+col*236,y=y0+row*28;UI.panel(c,x,y,230,25,META.ach[a.id]?'#1c3020':'#1a1428');tx(c,a.n,x+5,y+4,META.ach[a.id]?'#80ff80':'#fff',1,true);tx(c,a.d+' (+'+a.g+'G)',x+5,y+14,'#a8a0c8',1,true)})}
   else if(G.mtab===3){
