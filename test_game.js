@@ -347,6 +347,10 @@ const tests = {
       (code.includes('-14') || code.includes('vy = -14') || code.includes('vy=-14')),
       'Upper cumulus clouds in Sky realm must bounce player upwards with spring impulse (pl.vy = -14)'
     );
+    assert(
+      code.includes('!inArena') && !code.includes('b.gid===TL.CLOUDS)&&b.y/T<150){b.vy=-14'),
+      'Archangel arena floor must never bounce or launch the player'
+    );
     console.log('PASS: sky_bouncy_cumulus_clouds');
   },
 
