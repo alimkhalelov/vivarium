@@ -1853,7 +1853,7 @@ function shareRunCard(isWin){
   }else toast('Clipboard not available');
  }catch(e){toast('Clipboard error')}
 }
-function sceneDead(c){G.deadT=(G.deadT||0)+1;c.fillStyle='rgba(30,0,6,'+Math.min(.82,G.deadT/40)+')';c.fillRect(0,0,LW,LH);if(G.deadT<15)return;tx(c,'YOU DIED',LW/2,16,'#ff4050',4,true,'c');if(G.nearMiss||(G.boss&&!G.boss.dead)){const nm=G.nearMiss||{name:G.boss.name,pct:Math.max(1,Math.round((G.boss.hp/G.boss.maxhp)*100))};tx(c,'💀 ['+nm.name.toUpperCase()+']: ONLY '+nm.pct+'% HP LEFT! Dash through attacks next time!',LW/2,42,'#ff8040',1,true,'c')}const k=G.killer;UI.panel(c,130,52,220,54);tx(c,'SLAIN BY',LW/2,56,'#a8a0c8',1,true,'c');if(k&&k.sp){drawSpr(c,k.sp,LW/2-40,92,2,{plain:1,hue:k.hue||0,flip:1});tx(c,(k.name||'Unknown').toUpperCase(),LW/2+12,72,'#fff',1,true,'c');tx(c,k.sp.proc?'PROCEDURAL SPRITE':'DATASET SPRITE',LW/2+12,84,'#8a88a8',1,true,'c');if(UI.btn(c,'BAN THIS SPRITE',LW/2-8,94,104,12)){Sprites.ban(k.sp.id);toast('Sprite banned')}}else tx(c,(G.deathMsg||'Defeated').toUpperCase(),LW/2,76,'#fff',2,true,'c');tx(c,'LEVEL '+pl.lv+'   KILLS '+RS.kills+'   GOLD '+RS.gold+'   DAYS '+(Math.floor(G.time/600)+1)+'   BOSSES '+RS.bosses,LW/2,114,'#d8d0f0',1,true,'c');tx(c,'+'+G.runGold+' META GOLD  |  STAGE: '+Quest.title(),LW/2,126,'#ffd040',1,true,'c');if(pl.dmgByWp){const wps=Object.entries(pl.dmgByWp).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);if(wps.length){const tot=wps.reduce((s,[,v])=>s+v,0)||1;const topStr=wps.slice(0,3).map(([k,v])=>{const n=(WINFO[k]?WINFO[k].n.split(' ')[0]:k).toUpperCase();return n+': '+Math.round(v)+' ('+Math.round(v/tot*100)+'%)'}).join('  |  ');tx(c,'DPS: '+topStr,LW/2,139,'#8ad0ff',1,true,'c')}}let y=152;const retryLbl=(G.boss&&!G.boss.dead)?'[ SPACE: REVENGE ]':'[ SPACE: RETRY ]';if(UI.btn(c,retryLbl,150,y,180,15)||pressedU('Space')){startRun({seed:randWord(),mode:G.mode,hero:pl.hero.id,ng:G.ng})}y+=17;if(UI.btn(c,'[ 📋 COPY RUN CARD ]',150,y,180,15)){shareRunCard(false)}y+=17;if(G.mode==='adv'){if(UI.btn(c,'RESPAWN AT CAMPFIRE (-20% GOLD)',150,y,180,15)){respawn()}y+=17}if(UI.btn(c,'MAIN MENU',150,y,180,15)){Music.key='';goScene('menu')}}
+function sceneDead(c){G.deadT=(G.deadT||0)+1;c.fillStyle='rgba(30,0,6,'+Math.min(.82,G.deadT/40)+')';c.fillRect(0,0,LW,LH);if(G.deadT<15)return;tx(c,'YOU DIED',LW/2,12,'#ff4050',3,true,'c');if(G.nearMiss||(G.boss&&!G.boss.dead)){const nm=G.nearMiss||{name:G.boss.name,pct:Math.max(1,Math.round((G.boss.hp/G.boss.maxhp)*100))};tx(c,'['+nm.name.toUpperCase()+']: ONLY '+nm.pct+'% HP LEFT! DASH THROUGH ATTACKS!',LW/2,40,'#ff8040',1,true,'c')}const k=G.killer;UI.panel(c,130,52,220,54);tx(c,'SLAIN BY',LW/2,56,'#a8a0c8',1,true,'c');if(k&&k.sp){drawSpr(c,k.sp,LW/2-40,92,2,{plain:1,hue:k.hue||0,flip:1});tx(c,(k.name||'Unknown').toUpperCase(),LW/2+12,72,'#fff',1,true,'c');tx(c,k.sp.proc?'PROCEDURAL SPRITE':'DATASET SPRITE',LW/2+12,84,'#8a88a8',1,true,'c');if(UI.btn(c,'BAN THIS SPRITE',LW/2-8,94,104,12)){Sprites.ban(k.sp.id);toast('Sprite banned')}}else tx(c,(G.deathMsg||'Defeated').toUpperCase(),LW/2,76,'#fff',2,true,'c');tx(c,'LEVEL '+pl.lv+'   KILLS '+RS.kills+'   GOLD '+RS.gold+'   DAYS '+(Math.floor(G.time/600)+1)+'   BOSSES '+RS.bosses,LW/2,114,'#d8d0f0',1,true,'c');tx(c,'+'+G.runGold+' META GOLD  -  STAGE: '+Quest.title(),LW/2,126,'#ffd040',1,true,'c');if(pl.dmgByWp){const wps=Object.entries(pl.dmgByWp).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);if(wps.length){const tot=wps.reduce((s,[,v])=>s+v,0)||1;const topStr=wps.slice(0,3).map(([k,v])=>{const n=(WINFO[k]?WINFO[k].n.split(' ')[0]:k).toUpperCase();return n+': '+Math.round(v)+' ('+Math.round(v/tot*100)+'%)'}).join('  /  ');tx(c,'DPS: '+topStr,LW/2,139,'#8ad0ff',1,true,'c')}}let y=152;const retryLbl=(G.boss&&!G.boss.dead)?'[ SPACE: REVENGE ]':'[ SPACE: RETRY ]';if(UI.btn(c,retryLbl,135,y,210,15)||pressedU('Space')){startRun({seed:randWord(),mode:G.mode,hero:pl.hero.id,ng:G.ng})}y+=17;if(UI.btn(c,'[ COPY RUN CARD ]',135,y,210,15)){shareRunCard(false)}y+=17;if(G.mode==='adv'){if(UI.btn(c,'RESPAWN AT CAMPFIRE (-20% GOLD)',135,y,210,15)){respawn()}y+=17}if(UI.btn(c,'MAIN MENU',135,y,210,15)){Music.key='';goScene('menu')}}
 const sceneGameOver=sceneDead;
 const CREDITS=[
  'VIVARIUM // THE REINCARNATION PROTOCOL',
@@ -1881,94 +1881,101 @@ function sceneVictory(c){
  const m_t=Math.floor(G.time/60),s_t=Math.floor(G.time%60),tStr=(m_t<10?'0':'')+m_t+':'+(s_t<10?'0':'')+s_t;
 
  if(G.vStep===0){
-  if(G.isTrueWin){tx(c,'TRUE LIBERATION',LW/2,12,'#00ffcc',4,true,'c');tx(c,'THE PRIME ARCHITECT DECOMPILED - SIMULATION SHATTERED',LW/2,36,'#ff60a0',1,true,'c')}
-  else{tx(c,'VICTORY!',LW/2,12,'#ffd040',4,true,'c');tx(c,'THE HIGHEST BEING HAS FALLEN',LW/2,36,'#fff',1,true,'c')}
+  if(G.isTrueWin){tx(c,'TRUE LIBERATION',LW/2,6,'#00ffcc',3,true,'c');tx(c,'THE PRIME ARCHITECT DECOMPILED - SIMULATION SHATTERED',LW/2,33,'#ff60a0',1,true,'c')}
+  else{tx(c,'VICTORY!',LW/2,6,'#ffd040',3,true,'c');tx(c,'THE HIGHEST BEING HAS FALLEN',LW/2,33,'#ffffff',1,true,'c')}
   UI.panel(c,24,48,LW-48,166,'rgba(6,10,18,.94)',G.isTrueWin?'#00e0b0':'#ffd040');
-  c.save();c.fillStyle=G.isTrueWin?'rgba(0,255,204,0.14)':'rgba(255,208,64,0.14)';c.beginPath();c.arc(76,96,30,0,Math.PI*2);c.fill();c.restore();
-  drawSpr(c,heroSprite(pl.hero),60,110,2.5,{plain:1,hue:HUES[pl.hero.base]||0});
-  tx(c,pl.hero.name.toUpperCase(),76,124,'#ffd040',1,true,'c');tx(c,'CLASS LEVEL '+pl.lv,76,136,'#8ad0ff',1,true,'c');
-  tx(c,'💀 ENEMIES SLAIN:',148,62,'#a8a0c8',1,true,'l');tx(c,''+RS.kills,252,62,'#ffffff',1,true,'l');
-  tx(c,'⏱️ SURVIVED:',304,62,'#a8a0c8',1,true,'l');tx(c,tStr+' (DAY '+(Math.floor(G.time/600)+1)+')',382,62,'#ffffff',1,true,'l');
-  tx(c,'💰 GOLD COLLECTED:',148,78,'#a8a0c8',1,true,'l');tx(c,''+RS.gold,252,78,'#ffd040',1,true,'l');
-  tx(c,'👑 DIFFICULTY:',304,78,'#a8a0c8',1,true,'l');tx(c,(G.ng>0?'TORMENT +'+G.ng:'NORMAL'),382,78,(G.ng>0?'#ff4060':'#60ffb0'),1,true,'l');
-  c.fillStyle='rgba(255,255,255,0.12)';c.fillRect(148,96,LW-192,1);
-  tx(c,'META PROGRESSION REWARDS',148,106,'#ffd040',1,true,'l');
-  tx(c,'+ '+G.runGold+' META GOLD ACQUIRED',148,120,'#60ffb0',1,true,'l');
+  c.save();c.fillStyle=G.isTrueWin?'rgba(0,255,204,0.14)':'rgba(255,208,64,0.14)';c.beginPath();c.arc(78,102,30,0,Math.PI*2);c.fill();c.restore();
+  drawSpr(c,heroSprite(pl.hero),78,119,2.5,{plain:1,hue:HUES[pl.hero.base]||0});
+  tx(c,pl.hero.name.toUpperCase(),78,140,'#ffd040',1,true,'c');tx(c,'LEVEL '+pl.lv,78,152,'#8ad0ff',1,true,'c');
+  c.fillStyle='rgba(255,255,255,0.10)';c.fillRect(134,60,1,142);
+
+  tx(c,'KILLS:',146,62,'#a8a0c8',1,true,'l');tx(c,''+RS.kills,192,62,'#ffffff',1,true,'l');
+  tx(c,'TIME:',290,62,'#a8a0c8',1,true,'l');tx(c,tStr+' (D'+(Math.floor(G.time/600)+1)+')',330,62,'#ffffff',1,true,'l');
+  tx(c,'GOLD:',146,78,'#a8a0c8',1,true,'l');tx(c,''+RS.gold,192,78,'#ffd040',1,true,'l');
+  tx(c,'MODE:',290,78,'#a8a0c8',1,true,'l');tx(c,(G.ng>0?'TORMENT +'+G.ng:'NORMAL'),330,78,(G.ng>0?'#ff4060':'#60ffb0'),1,true,'l');
+
+  c.fillStyle='rgba(255,255,255,0.14)';c.fillRect(146,98,296,1);
+  tx(c,'META PROGRESSION REWARDS',146,108,'#ffd040',1,true,'l');
+  tx(c,'+ '+G.runGold+' META GOLD ACQUIRED',146,124,'#60ffb0',1,true,'l');
   const m=mastery(pl.hero.id),need=Math.floor(60*Math.pow(m.lv,1.35)),xpPct=clamp(m.xp/need,0,1);
-  tx(c,pl.hero.name.toUpperCase()+' MASTERY LV '+m.lv+(m.lv>=30?' (MAX)':' ('+m.xp+'/'+need+' XP)'),148,134,'#8ad0ff',1,true,'l');
-  bar(c,148,147,LW-196,6,xpPct,G.isTrueWin?'#00ffcc':'#4ac8ff');
-  tx(c,'CYCLE COMPLETE: TELEMETRY READY FOR TRANSMISSION',148,162,'#a8a0c8',1,false,'l');
+  tx(c,pl.hero.name.toUpperCase()+' MASTERY LV '+m.lv+(m.lv>=30?' (MAX)':' ('+m.xp+'/'+need+' XP)'),146,142,'#8ad0ff',1,true,'l');
+  bar(c,146,156,296,7,xpPct,G.isTrueWin?'#00ffcc':'#4ac8ff');
+  tx(c,'TELEMETRY READY FOR DECRYPTION',146,174,'#9a96b8',1,false,'l');
+  tx(c,'STEP 1 OF 3  -  PRESS SPACE TO CONTINUE',146,192,'#6a6884',1,false,'l');
+
   const p1=(Math.floor(G.t/20)%2===0);
-  const decBtn=p1?'[ 📜 DECRYPT TERMINAL LOGS ➔ ]':'[ 📜 DECRYPT TERMINAL LOGS > ]';
-  if(UI.btn(c,decBtn,LW/2-120,226,240,22)||pressedU('Space','Enter')){G.vStep=1;G.typewriterChars=0;if(Au&&Au.sfx)Au.sfx('powerup')}
-  if(UI.btn(c,'[ 📊 SKIP TO STATS ]',LW-120,226,100,22)){G.vStep=2;G.vCreditsT=0;if(Au&&Au.sfx)Au.sfx('powerup')}
+  const decBtn=p1?'[ DECRYPT TERMINAL LOGS >> ]':'[ DECRYPT TERMINAL LOGS >  ]';
+  if(UI.btn(c,decBtn,24,228,280,22)||pressedU('Space','Enter')){G.vStep=1;G.typewriterChars=0;if(Au&&Au.sfx)Au.sfx('powerup')}
+  if(UI.btn(c,'[ SKIP TO STATS ]',320,228,136,22)){G.vStep=2;G.vCreditsT=0;if(Au&&Au.sfx)Au.sfx('powerup')}
  }else if(G.vStep===1){
-  tx(c,'>> CYLINDER ZERO // DECLASSIFIED TERMINAL LOG <<',LW/2,12,'#60ffb0',1,true,'c');
-  tx(c,'OBSERVATION DECK TRANSMISSION - CYCLE '+(G.ng+1),LW/2,23,'#8a88a8',1,true,'c');
-  UI.panel(c,24,34,LW-48,180,'rgba(2,8,12,.96)',G.isTrueWin?'#00e0b0':'#2ecc71');
-  tx(c,'TERMINAL ARCHIVE // '+(activeLog?activeLog.title.toUpperCase():'UNKNOWN LOG'),36,44,'#60ffb0',1,true,'l');
-  tx(c,'SECURITY CLEARANCE: ROOT  |  SUBJECT: '+pl.hero.name.toUpperCase(),36,56,'#388860',1,true,'l');
-  c.fillStyle='rgba(0,255,160,0.25)';c.fillRect(36,68,LW-72,1);
+  tx(c,'>> CYLINDER ZERO // DECLASSIFIED LOG <<',LW/2,10,'#60ffb0',1,true,'c');
+  tx(c,'OBSERVATION DECK TRANSMISSION - CYCLE '+(G.ng+1),LW/2,22,'#8a88a8',1,true,'c');
+  UI.panel(c,24,36,LW-48,178,'rgba(2,8,12,.96)',G.isTrueWin?'#00e0b0':'#2ecc71');
+  tx(c,'TERMINAL ARCHIVE // '+(activeLog?activeLog.title.toUpperCase():'UNKNOWN LOG'),36,46,'#60ffb0',1,true,'l');
+  tx(c,'CLEARANCE: ROOT  -  SUBJECT: '+pl.hero.name.toUpperCase(),36,58,'#388860',1,true,'l');
+  c.fillStyle='rgba(0,255,160,0.25)';c.fillRect(36,70,LW-72,1);
   if(activeLog){
    G.typewriterChars=Math.min((G.typewriterChars||0)+1,activeLog.text.length);
    if(G.vT%3===0&&G.typewriterChars<activeLog.text.length&&Au&&Au.sfx)Au.sfx('shot',null,2.8);
    const vis=activeLog.text.slice(0,G.typewriterChars);
-   wrapText(c,vis+(G.t%20<10?'█':''),36,78,LW-72,'#d8ffe8','l',false);
+   wrapText(c,vis+(G.t%20<10?'_':''),36,80,LW-72,'#d8ffe8','l',false);
   }
-  if(UI.btn(c,'[ ◀ REWARDS ]',24,226,95,22)){G.vStep=0;if(Au&&Au.sfx)Au.sfx('blip')}
-  const debBtn=(Math.floor(G.t/20)%2===0)?'[ 📊 VIEW PERFORMANCE & CREDITS ➔ ]':'[ 📊 VIEW PERFORMANCE & CREDITS > ]';
-  if(UI.btn(c,debBtn,LW/2-95,226,240,22)||pressedU('Space','Enter')){G.vStep=2;G.vCreditsT=0;if(Au&&Au.sfx)Au.sfx('powerup')}
+  tx(c,'STEP 2 OF 3  -  PRESS SPACE TO CONTINUE',36,198,'#388860',1,false,'l');
+  if(UI.btn(c,'< REWARDS',24,228,110,22)){G.vStep=0;if(Au&&Au.sfx)Au.sfx('blip')}
+  const debBtn=(Math.floor(G.t/20)%2===0)?'[ VIEW PERFORMANCE & CREDITS >> ]':'[ VIEW PERFORMANCE & CREDITS >  ]';
+  if(UI.btn(c,debBtn,150,228,306,22)||pressedU('Space','Enter')){G.vStep=2;G.vCreditsT=0;if(Au&&Au.sfx)Au.sfx('powerup')}
  }else{
-  tx(c,'TACTICAL DEBRIEF & CREDITS',LW/2,10,'#ffd040',2,true,'c');
+  tx(c,'TACTICAL DEBRIEF & CREDITS',LW/2,6,'#ffd040',2,true,'c');
   let totDmg=0;
   const wps=Object.entries(pl.dmgByWp||{}).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]);
   if(wps.length)totDmg=wps.reduce((s,[,v])=>s+v,0)||1;
-  UI.panel(c,20,26,216,96,'rgba(8,12,24,.92)','#4a80b0');
-  tx(c,'WEAPON DAMAGE BREAKDOWN',30,34,'#8ad0ff',1,true,'l');
+  UI.panel(c,20,25,216,95,'rgba(8,12,24,.92)','#4a80b0');
+  tx(c,'WEAPON DAMAGE BREAKDOWN',30,33,'#8ad0ff',1,true,'l');
   if(wps.length){
    wps.slice(0,3).forEach(([k,v],idx)=>{
     const n=(WINFO[k]?WINFO[k].n.split(' ')[0]:k).toUpperCase();
     const pct=Math.round(v/totDmg*100);
     const valStr=v>=1000?(v/1000).toFixed(1)+'K':Math.round(v);
-    const rowY=48+idx*18;
+    const rowY=47+idx*18;
     tx(c,(idx+1)+'. '+n,30,rowY,'#ffffff',1,true,'l');
-    tx(c,valStr+' ('+pct+'%)',224,rowY,'#8ad0ff',1,true,'r');
-    bar(c,30,rowY+9,194,3,v/totDmg,idx===0?'#00ffcc':(idx===1?'#4ac8ff':'#a880ff'));
+    tx(c,valStr+' ('+pct+'%)',226,rowY,'#8ad0ff',1,true,'r');
+    bar(c,30,rowY+9,196,3,v/totDmg,idx===0?'#00ffcc':(idx===1?'#4ac8ff':'#a880ff'));
    });
    if(wps.length>3){
     const remTot=wps.slice(3).reduce((s,[,v])=>s+v,0);
-    tx(c,'+ '+(wps.length-3)+' OTHER WEAPONS: '+Math.round(remTot)+' DMG',30,104,'#a8a0c8',1,false,'l');
+    tx(c,'+ '+(wps.length-3)+' MORE: '+Math.round(remTot)+' DMG',30,104,'#a8a0c8',1,false,'l');
    }
   }else{
    tx(c,'NO RECORDED DAMAGE',30,56,'#888',1,true,'l');
   }
-  UI.panel(c,244,26,216,96,'rgba(8,12,24,.92)','#a08040');
-  tx(c,'CYCLE METRICS',254,34,'#ffd040',1,true,'l');
-  tx(c,'HERO: '+pl.hero.name.toUpperCase()+' (LV '+pl.lv+')',254,48,'#ffffff',1,true,'l');
-  tx(c,'THREAT LEVEL: '+G.threat+' | BOSSES: '+RS.bosses,254,62,'#d8d0f0',1,true,'l');
-  tx(c,'TOTAL DAMAGE: '+(totDmg>=1000?(totDmg/1000).toFixed(1)+'K':Math.round(totDmg)),254,76,'#60ffb0',1,true,'l');
-  tx(c,'TIME: '+tStr+' (DAY '+(Math.floor(G.time/600)+1)+')',254,90,'#a8a0c8',1,true,'l');
-  tx(c,'SEED: '+(G.seed||'RANDOM').slice(0,16),254,104,'#8ad0ff',1,true,'l');
+  const threatLv=(typeof Dir!=='undefined'&&Dir.shown>=0)?Dir.shown:(Dir&&Dir.step!=null?Dir.step:0);
+  UI.panel(c,244,25,216,95,'rgba(8,12,24,.92)','#a08040');
+  tx(c,'CYCLE METRICS',254,33,'#ffd040',1,true,'l');
+  tx(c,'HERO: '+pl.hero.name.toUpperCase()+' (LV '+pl.lv+')',254,47,'#ffffff',1,true,'l');
+  tx(c,'THREAT: '+threatLv+'  -  BOSSES: '+RS.bosses,254,61,'#d8d0f0',1,true,'l');
+  tx(c,'TOTAL DAMAGE: '+(totDmg>=1000?(totDmg/1000).toFixed(1)+'K':Math.round(totDmg)),254,75,'#60ffb0',1,true,'l');
+  tx(c,'TIME: '+tStr+' (DAY '+(Math.floor(G.time/600)+1)+')',254,89,'#a8a0c8',1,true,'l');
+  tx(c,'SEED: '+String(G.seed||'RANDOM').slice(0,18),254,103,'#8ad0ff',1,true,'l');
 
-  UI.panel(c,20,128,LW-40,70,'rgba(4,6,14,.90)','#3a3852');
-  c.save();c.beginPath();c.rect(22,130,LW-44,66);c.clip();
+  UI.panel(c,20,126,LW-40,68,'rgba(4,6,14,.90)','#3a3852');
+  c.save();c.beginPath();c.rect(22,128,LW-44,64);c.clip();
   G.vCreditsT=(G.vCreditsT||0)+0.35;
   const maxCreditsScroll=CREDITS.length*15+90;
   if(G.vCreditsT>maxCreditsScroll)G.vCreditsT=0;
   CREDITS.forEach((l,i)=>{
-   const cy=194-G.vCreditsT+i*15;
-   if(cy>=118&&cy<=208){
+   const cy=190-G.vCreditsT+i*15;
+   if(cy>=116&&cy<=204){
     const col=(i<2)?'#ffd040':(l.startsWith('SYSTEM')||l.startsWith('DESIGN')||l.startsWith('SPECIAL')||l.startsWith('PROCEDURAL')||l.startsWith('CYCLE')||l.startsWith('THANK')?'#00ffcc':'#d8d0f0');
     tx(c,l,LW/2,cy,col,1,true,'c');
    }
   });
   c.restore();
 
-  if(UI.btn(c,'[ 📋 COPY RUN CARD ]',LW/2-100,204,200,18)){shareRunCard(true)}
-  if(UI.btn(c,'[ ◀ LORE ]',20,228,76,22)){G.vStep=1;if(Au&&Au.sfx)Au.sfx('blip')}
-  if(UI.btn(c,'[ SPACE: RETRY ]',104,228,146,22)||pressedU('Space','Enter')){startRun({seed:randWord(),mode:G.mode,hero:pl.hero.id,ng:META.ng})}
-  if(UI.btn(c,'MAIN MENU',258,228,110,22)){Music.key='';goScene('menu')}
-  if(UI.btn(c,'[ ◀ REWARDS ]',376,228,84,22)){G.vStep=0;if(Au&&Au.sfx)Au.sfx('blip')}
+  if(UI.btn(c,'[ COPY RUN CARD ]',LW/2-100,200,200,18)){shareRunCard(true)}
+  if(UI.btn(c,'< LORE',20,224,82,22)){G.vStep=1;if(Au&&Au.sfx)Au.sfx('blip')}
+  if(UI.btn(c,'[ SPACE: RETRY ]',110,224,146,22)||pressedU('Space','Enter')){startRun({seed:randWord(),mode:G.mode,hero:pl.hero.id,ng:META.ng})}
+  if(UI.btn(c,'MAIN MENU',264,224,102,22)){Music.key='';goScene('menu')}
+  if(UI.btn(c,'< REWARDS',374,224,86,22)){G.vStep=0;if(Au&&Au.sfx)Au.sfx('blip')}
  }
 }
 /* ============================ UPDATE / LOOP ============================ */
