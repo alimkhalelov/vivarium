@@ -1722,6 +1722,7 @@ function menuBg(){G.cam.x=G.t*.45;G.cam.y=190*T-40;CURVE_ON=true;WRAPON=true;CUR
 function title(c){const k=E.outBack(clamp(G.sceneT/40,0,1));tx(c,'VIVARIUM',LW/2,40-(1-k)*60,'#ffd040',6,true,'c');tx(c,'THE REINCARNATION PROTOCOL',LW/2,86,'#60e0ff',1,true,'c');if(META.trueEnding)tx(c,'[ ⬡ TRUE LIBERATOR ⬡ ]',LW/2,22,'#00ffcc',1,true,'c')}
 function goScene(s){G.scene=s;G.sceneT=0;UI.sel=0}
 function sceneMenu(c){menuBg();title(c);
+ tx(c,'V2.4',8,8,'#6a6690',1,false,'l');
  const isFs=!!(document.fullscreenElement||document.webkitFullscreenElement);
  if(UI.btn(c,isFs?'[ 🗗 WINDOW ]':'[ ⛶ FULLSCREEN ]',LW-114,6,108,16))toggleFullscreen();
  const fitLbl='FIT: '+(S.screenFit==='fit'?'LETTERBOX':(S.screenFit==='cover'?'COVER':'EDGE-FILL'));
@@ -1743,8 +1744,7 @@ function sceneMenu(c){menuBg();title(c);
  const doneEntries=META.unlocked.length+Object.keys(META.ach).length+Math.min(40,META.codex.length)+((META.lore||[]).length);
  const codexPct=Math.round((doneEntries/totalEntries)*100);
  tx(c,'📖 CODEX '+codexPct+'%   •   💰 GOLD '+META.gold+(streak>0?'   •   🔥 STREAK '+streak:''),LW/2,LH-26,'#c8d0f0',1,true,'c');
- tx(c,'WASD / ARROWS MOVE  •  SPACE JUMP  •  SHIFT DASH  •  Q SKILL  •  E INTERACT',LW/2,LH-12,'#7a7aa0',1,true,'c');
- tx(c,'V2.4',8,LH-12,'#5a5678',1,false,'l')}
+ tx(c,'WASD / ARROWS MOVE  •  SPACE JUMP  •  SHIFT DASH  •  Q SKILL  •  E INTERACT',LW/2,LH-12,'#7a7aa0',1,true,'c')}
 function loadAndStart(){const s=lsGet('ps_save',null);if(!s)return;S.diff=S.diff;startRun({seed:s.seed,mode:s.mode,hero:s.hero,ng:s.ng,load:s})}
 function sceneHero(c){menuBg();c.fillStyle='rgba(8,6,16,.78)';c.fillRect(0,0,LW,LH);tx(c,'CHOOSE YOUR HERO',LW/2,8,'#ffd040',2,true,'c');
  for(let i=0;i<HEROES.length;i++){const h=HEROES[i],x=14+(i%5)*91,y=26+Math.floor(i/5)*58,w=87,hh=54,ul=META.unlocked.includes(h.id),sel=G.cfg.hero===h.id,inside=M.x>=x&&M.x<x+w&&M.y>=y&&M.y<y+hh;
