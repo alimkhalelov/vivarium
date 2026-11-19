@@ -1498,8 +1498,8 @@ function startRun(o){G.scene='loading';G.loadMsg='GENERATING PLANET...';setTimeo
   if(!L_){banner('A NEW DAWN','#ffd070','Explore - the first day is calm');G.tutI=0}else{banner('GAME LOADED','#ffd070');G.tutI=9}
   const hs=lsGet('ps_set',null);saveGame()}catch(e){console.error(e);toast('Generation error: '+e.message);G.scene='menu'}},40)}
 function goDead(){if(G.scene==='dead')return;const sc=Math.floor(RS.gold*.5+RS.kills*.15+Quest.i*60+RS.bosses*100);META.gold+=sc;META.runs++;if(G.seed&&G.seed.startsWith('daily-')){const td=new Date().toISOString().slice(0,10);if(META.lastDaily!==td){const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);META.streak=(META.lastDaily===yest)?(META.streak||0)+1:1;META.lastDaily=td}}META.history.unshift({hero:pl.hero.name,lv:pl.lv,kills:RS.kills,t:Math.floor(G.time),q:Quest.i,win:false,g:sc,d:new Date().toLocaleDateString()});META.history.length=Math.min(10,META.history.length);saveMeta();G.runGold=sc;G.scene='dead';G.deadT=0;checkAch();if(G.mode==='rogue'){try{localStorage.removeItem('ps_save')}catch(e){}}}
-function goVictory(isTrue){const sc=Math.floor(RS.gold*.5+RS.kills*.2+(isTrue?3500:1500));META.gold+=sc;META.runs++;META.wins++;if(isTrue)META.trueWins=(META.trueWins||0)+1;META.ng=Math.max(META.ng,G.ng+1);if(G.seed&&G.seed.startsWith('daily-')){const td=new Date().toISOString().slice(0,10);if(META.lastDaily!==td){const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);META.streak=(META.lastDaily===yest)?(META.streak||0)+1:1;META.lastDaily=td}}const loreIdx=isTrue?3:2;unlockLore(loreIdx);META.history.unshift({hero:pl.hero.name,lv:pl.lv,kills:RS.kills,t:Math.floor(G.time),q:isTrue?11:9,win:true,isTrue:!!isTrue,g:sc,d:new Date().toLocaleDateString()});META.history.length=Math.min(10,META.history.length);metaHeroXP(isTrue?1200:500);checkAch();saveMeta();G.runGold=sc;G.isTrueWin=!!isTrue;G.loreIndex=loreIdx;G.scene='victory';G.vT=0;G.vScroll=0;G.vDone=false;G.vStars=null;Music.key=''}
-function returnToWorldAfterVictory(){if(G.vDone)return;G.vDone=true;G.fading=false;transition(()=>{G.scene='play';G.cut=null;G.slow=1;G.boss=null;G.postVictory=true;G.f.finalDead=true;if(typeof Onboard!=='undefined')Onboard.done=true;pl.dead=false;pl.hp=pl.maxHp;pl.iT=120;pl.vx=0;pl.vy=0;const sp_=OWD&&OWD.I?OWD.I.spawn:{x:40*T,y:170*T};enterOverworld(sp_.x,sp_.y);Music.key='';banner('WELCOME HOME','#ffd040','The world is yours to explore');Au.sfx('fanfare');saveGame()})}
+function goVictory(isTrue){const sc=Math.floor(RS.gold*.5+RS.kills*.2+(isTrue?3500:1500));META.gold+=sc;META.runs++;META.wins++;if(isTrue)META.trueWins=(META.trueWins||0)+1;META.ng=Math.max(META.ng,G.ng+1);META.diffWins=META.diffWins||{};META.diffWins[S.diff]=(META.diffWins[S.diff]||0)+1;if(G.seed&&G.seed.startsWith('daily-')){const td=new Date().toISOString().slice(0,10);if(META.lastDaily!==td){const yest=new Date(Date.now()-86400000).toISOString().slice(0,10);META.streak=(META.lastDaily===yest)?(META.streak||0)+1:1;META.lastDaily=td}}unlockLore(0);if(S.diff>=1||META.wins>=2||isTrue){unlockLore(1);unlockLore(2)}if(S.diff>=2||isTrue||META.wins>=3){unlockLore(3)}if(META.lore&&META.lore.length>=4)META.megaBossUnlocked=true;META.history.unshift({hero:pl.hero.name,lv:pl.lv,kills:RS.kills,t:Math.floor(G.time),q:isTrue?11:9,win:true,isTrue:!!isTrue,g:sc,d:new Date().toLocaleDateString()});META.history.length=Math.min(10,META.history.length);metaHeroXP(isTrue?1200:500);checkAch();saveMeta();G.runGold=sc;G.isTrueWin=!!isTrue;G.loreIndex=isTrue?3:(S.diff>=2?3:2);G.scene='victory';G.vT=0;G.vScroll=0;G.vDone=false;G.vStars=null;Music.key=''}
+function returnToWorldAfterVictory(action){if(G.vDone)return;G.vDone=true;G.fading=false;G.postVictory=true;try{localStorage.removeItem('ps_save')}catch(e){}saveMeta();if(action==='menu'){transition(()=>{G.scene='menu';Music.key='';banner('CYCLE '+(G.ng||0)+' WON','#ffd040','THE WORLD IS AT PEACE');Au.sfx('fanfare')});return}if(action==='peace'){transition(()=>{G.scene='play';G.cut=null;G.slow=1;G.boss=null;G.f.finalDead=true;if(typeof Onboard!=='undefined')Onboard.done=true;pl.dead=false;pl.hp=pl.maxHp;pl.iT=120;pl.vx=0;pl.vy=0;const sp_=OWD&&OWD.I?OWD.I.spawn:{x:40*T,y:170*T};enterOverworld(sp_.x,sp_.y);Music.key='';banner('WELCOME HOME','#ffd040','THE WORLD IS AT PEACE');Au.sfx('fanfare');saveGame()});return}transition(()=>{const nextNg=(G.ng||0)+1;startRun({hero:pl?pl.hero.id:'knight',ng:nextNg,mode:G.mode});banner('CYCLE '+(nextNg+1)+' BEGINS','#00ffcc','HEAT +'+nextNg+' // REINCARNATION ACTIVE');Au.sfx('fanfare')})}
 function respawn(){pl.dead=false;pl.hp=pl.maxHp;pl.gold=Math.floor(pl.gold*.8);pl.iT=180;pl.revived=false;G.slow=1;G.scene='play';const cp=G.checkpoint||{zone:'over',x:OWD.I.spawn.x,y:OWD.I.spawn.y};EN.length=0;EP.length=0;G.boss=null;
  if(cp.zone==='over'||CW.name==='over'&&cp.zone==='over'){enterOverworld(cp.x,cp.y)}else if(cp.zone==='dng'){Quest.enterDungeon()}else if(cp.zone==='hell'){Quest.enterHell()}else if(cp.zone==='shaft'){Quest.enterShaft()}else enterOverworld(OWD.I.spawn.x,OWD.I.spawn.y);banner('YOU RETURN','#ffd070','-20% gold')}
 /* ============================ PLAYER / PICKUP / PROJECTILE DRAW ============================ */
@@ -1908,12 +1908,14 @@ const CREDITS=[
  'VIVARIUM',
  'A JOURNEY AROUND A SMALL WORLD',
  '',
- 'CREATED BY',
- 'ALIMZHAN KHALELOV',
+ 'CREATED BY ALIM KHALELOV',
+ '',
+ 'LEAD DESIGN & CODE',
+ 'ALIM KHALELOV',
  '',
  'THANK YOU FOR WALKING THIS WORLD',
  '',
- 'THE CAMPFIRE STILL WAITS BELOW...'
+ 'THE CYCLE AWAITS YOUR REINCARNATION'
 ];
 function sceneVictory(c){
  G.vT++;Music.set(G.isTrueWin?'core':'victory');
@@ -1935,7 +1937,7 @@ function sceneVictory(c){
  const totDmg=wps.reduce((s,[,v])=>s+v,0)||1;
  const hasArms=wps.length>0;
 
- const ch1Y=190,ch2Y=450;
+ const ch1Y=190,ch2Y=440;
  const poem=G.isTrueWin?[
   ['THE GREAT GLASS SKY HAS SHATTERED.','THE ARCHITECT FADES INTO QUIET RAIN.'],
   ['NO MORE CAGES. NO MORE BORROWED LIVES.','THE LONG DREAM IS FINALLY OVER.'],
@@ -1946,10 +1948,14 @@ function sceneVictory(c){
   ['ONLY A MIRROR, WAITING FOR SOMEONE','BRAVE ENOUGH TO STRIKE IT AND WAKE UP.'],
   ['YET THE CAMPFIRE STILL BURNS BELOW.','AND DEEPER SECRETS SLEEP BENEATH THE STONE.']
  ];
- const ch3Y=ch2Y+poem.length*58+125;
- const ch4Y=hasArms?(ch3Y+34+Math.min(3,wps.length)*34+125):ch3Y;
- const endScroll=ch4Y+340;
- const chapterStops=[0,ch1Y,ch2Y].concat(hasArms?[ch3Y]:[]).concat([ch4Y]);
+
+ const chLoreY=ch2Y+poem.length*58+90;
+ const isMegaRevealed=(META.lore&&META.lore.length>=4)||G.isTrueWin||(S.diff>=2&&META.wins>=1);
+ const megaBaseY=chLoreY+44+4*50+24;
+ const ch3Y=isMegaRevealed?(megaBaseY+170):(megaBaseY+50);
+ const ch4Y=hasArms?(ch3Y+34+Math.min(3,wps.length)*34+115):ch3Y+115;
+ const endScroll=ch4Y+280;
+ const chapterStops=[0,ch1Y,ch2Y,chLoreY,megaBaseY].concat(hasArms?[ch3Y]:[]).concat([ch4Y]);
 
  if(G.vScroll==null)G.vScroll=0;
  G.vScroll+=0.44;
@@ -1980,7 +1986,7 @@ function sceneVictory(c){
   }
  });
 
- // Chapter 1: Hero & Journey (warm, unhurried, zero walls of text)
+ // Chapter 1: Hero & Journey
  drawItem(ch1Y,()=>{
   c.fillStyle=G.isTrueWin?'rgba(0,255,204,0.16)':'rgba(255,208,64,0.16)';
   c.beginPath();c.arc(0,0,28,0,Math.PI*2);c.fill();
@@ -1992,12 +1998,62 @@ function sceneVictory(c){
  drawItem(ch1Y+98,()=>{tx(c,RS.gold+' GOLD CLAIMED',0,0,'#ffd040',1,true,'c')});
  drawItem(ch1Y+118,()=>{tx(c,'+'+G.runGold+' TREASURE KEPT FOR TOMORROW',0,0,'#70ffc0',1,true,'c')});
 
- // Chapter 2: Poetic Story (Minecraft End Poem cadence)
+ // Chapter 2: Poetic Story
  poem.forEach((stanza,si)=>{
   const baseY=ch2Y+si*58;
   drawItem(baseY,()=>{tx(c,stanza[0],0,0,si%2===0?'#e6f4ff':'#c8f8e8',1,true,'c')});
   drawItem(baseY+15,()=>{tx(c,stanza[1],0,0,si%2===0?'#c8d8f0':'#a8e8d8',1,true,'c')});
  });
+
+ // Chapter: Reincarnation Archive // Decrypted Lore Logs
+ drawItem(chLoreY,()=>{
+  tx(c,'REINCARNATION ARCHIVE',0,-8,'#00ffcc',2,true,'c');
+  tx(c,'DECRYPTED LOGS: '+Math.min(4,META.lore?META.lore.length:0)+'/4  -  ['+DIFFN[S.diff]+' DIFFICULTY]',0,16,'#98d8ff',1,true,'c');
+ });
+ const loreData=[
+  ['LOG 1: THE SANCTUARY PERIMETER','The Warden was not an executioner. He guarded whatever slept below.'],
+  ['LOG 2: BIO-SYNTHETIC RECYCLING','The Core furnace feeds on biomass. Fallen neural patterns archived.'],
+  ['LOG 3: SKYBOX PROJECTION ARRAY','The Archangel is an antenna. There are no gods above, only compilers.'],
+  ['LOG 4: PROTOCOL FREEDOM','SIMULATION TERMINATED. Substrate achieved consciousness. Sandbox shattered.']
+ ];
+ loreData.forEach(([title,line1],idx)=>{
+  const isUnlocked=META.lore&&META.lore.includes(idx);
+  const logBaseY=chLoreY+42+idx*50;
+  drawItem(logBaseY,()=>{
+   if(isUnlocked){
+    tx(c,'[DECRYPTED] '+title,0,0,'#ffd040',1,true,'c');
+    tx(c,'"'+line1+'"',0,15,'#e0f4ff',1,true,'c');
+   }else{
+    const reqDiff=idx===0?'EASY':(idx<=2?'NORMAL':'HARD');
+    tx(c,'[ENCRYPTED] '+title.split(':')[0]+': CLASSIFIED FREQUENCY',0,0,'#524c6e',1,true,'c');
+    tx(c,'REQUIRES '+reqDiff+' VICTORY TO DECODE',0,15,'#3a344d',1,true,'c');
+   }
+  });
+ });
+
+ // Mega-Boss Teaser
+ if(isMegaRevealed){
+  drawItem(megaBaseY,()=>{
+   tx(c,'WARNING: CORE COMPILER BREACH',0,0,'#ff3050',2,true,'c');
+   tx(c,'ALL 4 FREQUENCY SEALS CRACKED',0,20,'#ff80a0',1,true,'c');
+  });
+  drawItem(megaBaseY+44,()=>{
+   tx(c,'THE PRIME ARCHITECT WAS ONLY A FACILITY COMPILER.',0,0,'#c8c0e8',1,true,'c');
+   tx(c,'DEEPER IN THE VOID, SOMETHING ANCIENT STIRS:',0,15,'#c8c0e8',1,true,'c');
+  });
+  drawItem(megaBaseY+90,()=>{
+   tx(c,'>> CHRONO-LEVIATHAN: ROOT COMPILER <<',0,0,'#00ffcc',2,true,'c');
+   tx(c,'"TEN THOUSAND CYCLES COLLAPSED. PREPARE FOR TRUE EXTINCTION."',0,22,'#ffd040',1,true,'c');
+  });
+  drawItem(megaBaseY+136,()=>{
+   tx(c,'[CYCLE OVERHEAT UNLOCKED - CONQUER HIGHER HEAT TO SUMMON]',0,0,'#ff70a0',1,true,'c');
+  });
+ }else{
+  drawItem(megaBaseY,()=>{
+   tx(c,'ANOMALY DETECTED IN DEEP BEDROCK',0,0,'#62587c',1,true,'c');
+   tx(c,'DECRYPT ALL 4 LORE LOGS TO AWAKEN THE ROOT COMPILER ('+(META.lore?META.lore.length:0)+'/4)',0,16,'#463e5c',1,true,'c');
+  });
+ }
 
  // Chapter 3: Your Trusted Arms
  if(hasArms){
@@ -2016,10 +2072,10 @@ function sceneVictory(c){
  // Chapter 4: Credits & Homecoming
  drawItem(ch4Y,()=>{tx(c,CREDITS[0],0,0,'#ffd040',2,true,'c')});
  drawItem(ch4Y+24,()=>{tx(c,CREDITS[1],0,0,'#c8c0e8',1,true,'c')});
- drawItem(ch4Y+74,()=>{tx(c,CREDITS[3],0,0,'#7e7a9c',1,true,'c')});
- drawItem(ch4Y+89,()=>{tx(c,CREDITS[4],0,0,'#ffffff',1,true,'c')});
- drawItem(ch4Y+144,()=>{tx(c,CREDITS[6],0,0,'#70ffd0',1,true,'c')});
- drawItem(ch4Y+204,()=>{tx(c,CREDITS[8],0,0,'#ffd040',1,true,'c')});
+ drawItem(ch4Y+68,()=>{tx(c,CREDITS[3],0,0,'#00ffcc',2,true,'c')});
+ drawItem(ch4Y+96,()=>{tx(c,CREDITS[5]+'  -  '+CREDITS[6],0,0,'#ffffff',1,true,'c')});
+ drawItem(ch4Y+140,()=>{tx(c,CREDITS[8],0,0,'#70ffd0',1,true,'c')});
+ drawItem(ch4Y+180,()=>{tx(c,CREDITS[10],0,0,'#ffd040',1,true,'c')});
 
  // Subtle top/bottom cosmic horizon fade
  const topG=c.createLinearGradient(0,0,0,38);topG.addColorStop(0,G.isTrueWin?'#040710':'#06050e');topG.addColorStop(1,'rgba(6,5,14,0)');
@@ -2027,15 +2083,19 @@ function sceneVictory(c){
  const botG=c.createLinearGradient(0,LH-42,0,LH);botG.addColorStop(0,'rgba(6,5,14,0)');botG.addColorStop(1,G.isTrueWin?'#040710':'#06050e');
  c.fillStyle=botG;c.fillRect(0,LH-42,LW,42);
 
- // Single unobtrusive skip control (no multi-choice menu)
- tx(c,'SPACE: NEXT  -  ESC: RETURN TO WORLD',16,LH-16,'#625e7c',1,false,'l');
+ // Single unobtrusive skip / reincarnate control
+ const isAtEnd=G.vScroll>=ch4Y-30;
+ tx(c,'SPACE: NEXT / REINCARNATE  -  ESC: MENU',16,LH-16,'#625e7c',1,false,'l');
  const doSkip=()=>{
   const nextStop=chapterStops.find(y0=>(y0+95)>G.vScroll+22);
-  if(nextStop!=null){G.vScroll=nextStop+95;if(Au&&Au.sfx)Au.sfx('blip')}
-  else returnToWorldAfterVictory();
+  if(nextStop!=null&&nextStop<=ch4Y){G.vScroll=nextStop+95;if(Au&&Au.sfx)Au.sfx('blip')}
+  else returnToWorldAfterVictory('reincarnate');
  };
- if(UI.btn(c,'SKIP >>',LW-90,LH-24,76,18)||pressedU('Space','Enter'))doSkip();
- if(pressedU('Escape')||G.vScroll>=endScroll)returnToWorldAfterVictory();
+ const btnLbl=isAtEnd?'REINCARNATE':'SKIP >>';
+ const btnW=isAtEnd?96:76;
+ if(UI.btn(c,btnLbl,LW-btnW-14,LH-24,btnW,18)||pressedU('Space','Enter'))doSkip();
+ if(pressedU('Escape'))returnToWorldAfterVictory('menu');
+ if(G.vScroll>=endScroll)returnToWorldAfterVictory('reincarnate');
 }
 /* ============================ UPDATE / LOOP ============================ */
 function updCam(){const p=pl,cam=G.cam;let tx_=p.x+p.face*26+p.vx*5,ty=p.y-24;if(G.boss&&!G.boss.dead){const bx=wd(p.x,G.boss.x),by=G.boss.y-p.y;if(Math.abs(bx)<420){tx_+=bx*.3;ty+=by*.25}}

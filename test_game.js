@@ -622,6 +622,41 @@ const tests = {
       'Critical health (<25% HP) must trigger rhythmic heartbeat audio, clutch slow-mo, and intensified red vignette'
     );
     console.log('PASS: gameplay_balance_and_feel_overhaul');
+  },
+
+  post_victory_reincarnation_and_lore_mega_boss_teaser() {
+    // 1. Reincarnation start from scratch & save wipe
+    assert(
+      code.includes("localStorage.removeItem('ps_save')") &&
+      code.includes("startRun({hero:pl?pl.hero.id:'knight',ng:nextNg,mode:G.mode})") &&
+      code.includes("banner('CYCLE '+(nextNg+1)+' BEGINS'"),
+      'Finishing victory must wipe finished run save and reincarnate from scratch with +1 Heat'
+    );
+
+    // 2. Difficulty-based lore unlocks
+    assert(
+      code.includes("unlockLore(0)") &&
+      code.includes("if(S.diff>=1||META.wins>=2||isTrue){unlockLore(1);unlockLore(2)}") &&
+      code.includes("if(S.diff>=2||isTrue||META.wins>=3){unlockLore(3)}"),
+      'Lore logs must decrypt based on run difficulty (Normal: logs 1 & 2, Hard/True: log 3)'
+    );
+
+    // 3. Mega-boss teaser when all lore decrypted
+    assert(
+      code.includes("CHRONO-LEVIATHAN: ROOT COMPILER") &&
+      code.includes("WARNING: CORE COMPILER BREACH") &&
+      code.includes("META.megaBossUnlocked=true"),
+      'Victory crawl must feature an ominous teaser for the Mega-Boss Chrono-Leviathan when all 4 logs are decrypted'
+    );
+
+    // 4. Credits attribution: Created by Alim Khalelov
+    assert(
+      code.includes("'CREATED BY ALIM KHALELOV'") &&
+      code.includes("CREDITS[3]") &&
+      code.includes("LEAD DESIGN & CODE"),
+      'Credits must prominently display CREATED BY ALIM KHALELOV and LEAD DESIGN & CODE'
+    );
+    console.log('PASS: post_victory_reincarnation_and_lore_mega_boss_teaser');
   }
 };
 
