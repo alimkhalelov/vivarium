@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1740,7 +1743,8 @@ function sceneMenu(c){menuBg();title(c);
  const doneEntries=META.unlocked.length+Object.keys(META.ach).length+Math.min(40,META.codex.length)+((META.lore||[]).length);
  const codexPct=Math.round((doneEntries/totalEntries)*100);
  tx(c,'📖 CODEX '+codexPct+'%   •   💰 GOLD '+META.gold+(streak>0?'   •   🔥 STREAK '+streak:''),LW/2,LH-26,'#c8d0f0',1,true,'c');
- tx(c,'WASD / ARROWS MOVE  •  SPACE JUMP  •  SHIFT DASH  •  Q SKILL  •  E INTERACT',LW/2,LH-12,'#7a7aa0',1,true,'c')}
+ tx(c,'WASD / ARROWS MOVE  •  SPACE JUMP  •  SHIFT DASH  •  Q SKILL  •  E INTERACT',LW/2,LH-12,'#7a7aa0',1,true,'c');
+ tx(c,'V2.4',8,LH-12,'#5a5678',1,false,'l')}
 function loadAndStart(){const s=lsGet('ps_save',null);if(!s)return;S.diff=S.diff;startRun({seed:s.seed,mode:s.mode,hero:s.hero,ng:s.ng,load:s})}
 function sceneHero(c){menuBg();c.fillStyle='rgba(8,6,16,.78)';c.fillRect(0,0,LW,LH);tx(c,'CHOOSE YOUR HERO',LW/2,8,'#ffd040',2,true,'c');
  for(let i=0;i<HEROES.length;i++){const h=HEROES[i],x=14+(i%5)*91,y=26+Math.floor(i/5)*58,w=87,hh=54,ul=META.unlocked.includes(h.id),sel=G.cfg.hero===h.id,inside=M.x>=x&&M.x<x+w&&M.y>=y&&M.y<y+hh;
