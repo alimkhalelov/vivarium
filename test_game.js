@@ -520,8 +520,8 @@ const tests = {
 
   victory_screen_progressive_disclosure_and_clean_layout() {
     assert(
-      code.includes("G.vStep===0") && code.includes("G.vStep===1"),
-      'Victory screen must implement multi-stage progressive disclosure (G.vStep)'
+      code.includes("G.vScroll") && code.includes("chapterStops") && code.includes("drawItem"),
+      'Victory screen must implement serene sequential Star Wars / Minecraft-style vertical crawl with chapter gaps'
     );
     assert(
       code.includes("wrapText(c,s,x,y,w,col='#fff',align='c',bold=true)") ||
@@ -529,23 +529,32 @@ const tests = {
       'wrapText must accept align parameter defaulting to c with support for left align l'
     );
     assert(
-      code.includes("CREDITS.forEach") &&
-      code.includes("c.clip()") &&
-      code.includes("G.vCreditsT"),
-      'Credits marquee must be smoothly animated and clipped in dedicated window without overlapping buttons'
+      code.includes("SKIP >>") && code.includes("returnToWorldAfterVictory"),
+      'Victory crawl must offer a single skip control without choice overload and return player to the Overworld'
     );
     assert(
-      code.includes("DECRYPT TERMINAL LOGS") &&
-      code.includes("VIEW PERFORMANCE & CREDITS") &&
-      code.includes("SPACE: RETRY"),
-      'Progressive disclosure flow must provide clear stage navigation and spacebar flow'
+      code.includes("THE WORLD IS AT PEACE") && code.includes("G.postVictory"),
+      'Returning to the world after victory must set postVictory state and peaceful quest title'
     );
     assert(
-      code.includes("wps.slice(0,3).forEach") &&
-      code.includes("WEAPON DAMAGE BREAKDOWN"),
-      'Stage 2 debrief must display weapon damage breakdown with visual proportion bars'
+      code.includes("YOUR TRUSTED ARMS") && code.includes("wps.slice(0,3).forEach"),
+      'Victory crawl must present weapon highlights in warm non-technical prose'
     );
     console.log('PASS: victory_screen_progressive_disclosure_and_clean_layout');
+  },
+
+  map_screen_bounds_and_legend_no_overlap() {
+    assert(
+      code.includes("const mx=20,my=28,mw=LW-40,mh=200") &&
+      code.includes("c.rect(mx,my,mw,mh);c.clip()"),
+      'Map screen must clip terrain rendering strictly within centered inner bounds (mw=LW-40)'
+    );
+    assert(
+      code.includes("M / TAB / ESC TO CLOSE") &&
+      code.includes("CLICK ANYWHERE TO CLOSE"),
+      'Map screen must separate close hint from bottom legend so labels never collide'
+    );
+    console.log('PASS: map_screen_bounds_and_legend_no_overlap');
   },
 
   hell_shaft_skip_objective_and_no_teleport_loop() {
