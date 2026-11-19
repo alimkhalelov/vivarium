@@ -641,12 +641,29 @@ const tests = {
       'Lore logs must decrypt based on run difficulty (Normal: logs 1 & 2, Hard/True: log 3)'
     );
 
-    // 3. Mega-boss teaser when all lore decrypted
+    // 3. Mega-boss teaser when all lore decrypted (poetic, non-technical cosmic lore)
     assert(
-      code.includes("CHRONO-LEVIATHAN: ROOT COMPILER") &&
-      code.includes("WARNING: CORE COMPILER BREACH") &&
+      code.includes("CHRONO-LEVIATHAN: WEAVER OF EONS") &&
+      code.includes("THE ANCIENT WEAVER STIRS") &&
       code.includes("META.megaBossUnlocked=true"),
       'Victory crawl must feature an ominous teaser for the Mega-Boss Chrono-Leviathan when all 4 logs are decrypted'
+    );
+
+    // 4. Meta-progression progress bar & explicit unlock conditions
+    assert(
+      code.includes("META-PROGRESSION HARMONY") &&
+      code.includes("SANCTUARY SYNCHRONIZATION") &&
+      code.includes("UNLOCK CONDITION:") &&
+      code.includes("NEXT REVELATION:"),
+      'Victory crawl must display meta-progression synchronization bar and explicit unlock requirements'
+    );
+
+    // 5. Difficulty and modifier quick-setting controls
+    assert(
+      code.includes("DIFF: '+DIFFN[S.diff]") &&
+      code.includes("diffBtnW") &&
+      code.includes("toast('Next cycle: '+DIFFN[S.diff])"),
+      'Victory screen and menus must provide quick-access buttons to adjust difficulty and modifiers'
     );
 
     // 4. Credits attribution: Created by Alim Khalelov
