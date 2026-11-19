@@ -579,6 +579,49 @@ const tests = {
       'Shaft exit and enterShaft must reset transition and exiting flags to prevent deadlock'
     );
     console.log('PASS: hell_shaft_skip_objective_and_no_teleport_loop');
+  },
+
+  gameplay_balance_and_feel_overhaul() {
+    // 1. Arcane Missiles rebalance
+    assert(
+      code.includes("nearestEnemy(p.x,p.y-8,220)") &&
+      code.includes("clamp(da,-.09,.09)"),
+      'Arcane Missiles homing radius must be tuned to 220px and turn steering clamped to 0.09'
+    );
+
+    // 2. Knight melee kill synergy
+    assert(
+      code.includes("isKnightMelee=pl&&pl.hero&&pl.hero.id==='knight'&&isMelee") &&
+      code.includes("pl.skillCd=Math.max(0,prevCd-15)") &&
+      code.includes("xpMult=isKnightMelee?1.5:1"),
+      'Knight melee kills must reduce Bulwark cooldown and grant +50% XP and gold'
+    );
+
+    // 3. Boss Armor Pierce & Shield Cracking
+    assert(
+      code.includes("isBossAtk=!!(src&&(src.boss||") &&
+      code.includes("effArmor=isBossAtk?Math.floor(p.st.armor*0.25):p.st.armor") &&
+      code.includes("p.shield=Math.max(0,p.shield-30)"),
+      'Endgame boss attacks must pierce 75% flat armor and strip Bulwark shield frames'
+    );
+
+    // 4. Early-game pack spawning
+    assert(
+      code.includes("spawnPack(count)") &&
+      code.includes("this.zone==='surface'&&G.time<90&&CW.name==='over'") &&
+      code.includes("this.spawnPack(R0.i(3,5))"),
+      'Overworld surface during first 90s must spawn dense packs of 3-5 enemies in movement direction'
+    );
+
+    // 5. Low-HP clutch audio & visual feel
+    assert(
+      code.includes("case'heartbeat'") &&
+      code.includes("p.hp<p.maxHp*0.25") &&
+      code.includes("CRITICAL HEALTH!") &&
+      code.includes("isCrit=pl.hp<pl.maxHp*0.25"),
+      'Critical health (<25% HP) must trigger rhythmic heartbeat audio, clutch slow-mo, and intensified red vignette'
+    );
+    console.log('PASS: gameplay_balance_and_feel_overhaul');
   }
 };
 
